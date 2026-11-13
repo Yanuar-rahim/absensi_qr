@@ -7,16 +7,10 @@
 
     <title>Laporan Absensi - Absensi QR</title>
 
-    <!-- TAILWIND -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- ICON -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- EXCEL -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <!-- FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -103,7 +97,6 @@
   </head>
 
   <body class="min-h-screen">
-    <!-- MOBILE OVERLAY -->
     <div
       id="overlay"
       class="overlay fixed inset-0 z-40 hidden bg-slate-900/50 md:hidden"
@@ -223,7 +216,6 @@
 
     <!-- MAIN -->
     <main class="min-h-screen md:ml-64">
-      <!-- TOPBAR -->
       <header
         class="topbar sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
       >
@@ -261,7 +253,6 @@
         </div>
       </header>
 
-      <!-- REPORT CONTENT -->
       <section class="report-content p-4 sm:p-6 lg:p-8">
         <!-- TITLE -->
         <div
@@ -269,14 +260,12 @@
         >
           <div>
             <h1 class="text-2xl font-bold text-slate-800">Laporan Absensi</h1>
-
             <p class="mt-2 text-sm text-slate-400">
               Pantau dan kelola rekapitulasi kehadiran mahasiswa berdasarkan
               mata kuliah dan kelas.
             </p>
           </div>
 
-          <!-- EXPORT BUTTONS -->
           <div class="action-buttons flex flex-wrap gap-2">
             <button
               id="printButton"
@@ -304,7 +293,6 @@
           </div>
         </div>
 
-        <!-- NOTIFICATION -->
         <div id="notification" class="mb-6 hidden rounded-xl p-4 text-sm"></div>
 
         <!-- STATISTICS -->
@@ -313,7 +301,6 @@
             <h3 class="text-lg font-bold text-slate-800">
               Ringkasan Kehadiran
             </h3>
-
             <p class="text-sm text-slate-400">
               Informasi berdasarkan hasil filter laporan
             </p>
@@ -329,18 +316,16 @@
                 >
                   <i data-lucide="clipboard-check" class="h-6 w-6"></i>
                 </div>
-                <span class="text-xs font-medium text-slate-400">
-                  Kehadiran
-                </span>
+                <span class="text-xs font-medium text-slate-400"
+                  >Kehadiran</span
+                >
               </div>
-
               <h4
                 id="totalAttendance"
                 class="text-2xl font-bold text-slate-800"
               >
                 0
               </h4>
-
               <p class="mt-1 text-xs text-slate-400">
                 Total kehadiran tercatat
               </p>
@@ -355,15 +340,13 @@
                 >
                   <i data-lucide="users" class="h-6 w-6"></i>
                 </div>
-                <span class="text-xs font-medium text-slate-400">
-                  Mahasiswa
-                </span>
+                <span class="text-xs font-medium text-slate-400"
+                  >Mahasiswa</span
+                >
               </div>
-
               <h4 id="totalStudents" class="text-2xl font-bold text-slate-800">
                 0
               </h4>
-
               <p class="mt-1 text-xs text-slate-400">Mahasiswa yang hadir</p>
             </div>
 
@@ -376,15 +359,13 @@
                 >
                   <i data-lucide="calendar-check" class="h-6 w-6"></i>
                 </div>
-                <span class="text-xs font-medium text-slate-400">
-                  Pertemuan
-                </span>
+                <span class="text-xs font-medium text-slate-400"
+                  >Pertemuan</span
+                >
               </div>
-
               <h4 id="totalMeetings" class="text-2xl font-bold text-slate-800">
                 0
               </h4>
-
               <p class="mt-1 text-xs text-slate-400">
                 Jumlah pertemuan tercatat
               </p>
@@ -401,7 +382,6 @@
           >
             <div>
               <h3 class="font-bold text-slate-800">Filter Laporan</h3>
-
               <p class="mt-1 text-xs text-slate-400">
                 Pilih mata kuliah, kelas, dan pertemuan untuk melihat laporan
                 secara spesifik.
@@ -418,15 +398,12 @@
           </div>
 
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <!-- FILTER MATA KULIAH -->
             <div>
               <label
                 for="courseFilter"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Mata Kuliah</label
               >
-                Mata Kuliah
-              </label>
-
               <select
                 id="courseFilter"
                 class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
@@ -435,15 +412,12 @@
               </select>
             </div>
 
-            <!-- FILTER KELAS -->
             <div>
               <label
                 for="classFilter"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Kelas</label
               >
-                Kelas
-              </label>
-
               <select
                 id="classFilter"
                 disabled
@@ -453,15 +427,12 @@
               </select>
             </div>
 
-            <!-- FILTER PERTEMUAN -->
             <div>
               <label
                 for="meetingFilter"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Pertemuan</label
               >
-                Pertemuan
-              </label>
-
               <select
                 id="meetingFilter"
                 disabled
@@ -471,15 +442,12 @@
               </select>
             </div>
 
-            <!-- TANGGAL MULAI -->
             <div>
               <label
                 for="startDate"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Tanggal Mulai</label
               >
-                Tanggal Mulai
-              </label>
-
               <input
                 type="date"
                 id="startDate"
@@ -487,15 +455,12 @@
               />
             </div>
 
-            <!-- TANGGAL AKHIR -->
             <div>
               <label
                 for="endDate"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Tanggal Akhir</label
               >
-                Tanggal Akhir
-              </label>
-
               <input
                 type="date"
                 id="endDate"
@@ -503,21 +468,17 @@
               />
             </div>
 
-            <!-- PENCARIAN MAHASISWA -->
             <div>
               <label
                 for="searchInput"
                 class="mb-2 block text-sm font-medium text-slate-700"
+                >Cari Mahasiswa</label
               >
-                Cari Mahasiswa
-              </label>
-
               <div class="relative">
                 <i
                   data-lucide="search"
                   class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
                 ></i>
-
                 <input
                   type="text"
                   id="searchInput"
@@ -535,12 +496,10 @@
               data-lucide="info"
               class="mt-0.5 h-5 w-5 shrink-0 text-blue-600"
             ></i>
-
             <div>
               <p class="text-sm font-semibold text-blue-800">
                 Ekspor berdasarkan filter
               </p>
-
               <p class="mt-1 text-xs leading-relaxed text-blue-700">
                 File PDF dan Excel akan mengikuti mata kuliah, kelas, pertemuan,
                 rentang tanggal, dan pencarian mahasiswa yang sedang dipilih.
@@ -550,7 +509,7 @@
           </div>
         </section>
 
-        <!-- ATTENDANCE TABLE -->
+        <!-- TABLE -->
         <section
           class="report-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
         >
@@ -559,12 +518,10 @@
           >
             <div>
               <h3 class="font-bold text-slate-800">Data Kehadiran Mahasiswa</h3>
-
               <p id="resultInfo" class="mt-1 text-xs text-slate-400">
                 Memuat data...
               </p>
             </div>
-
             <div
               id="selectedReportInfo"
               class="text-xs font-medium text-blue-600"
@@ -581,7 +538,7 @@
                   <th class="px-5 py-4 font-semibold">Mata Kuliah</th>
                   <th class="px-5 py-4 font-semibold">Kelas</th>
                   <th class="px-5 py-4 font-semibold">Pertemuan</th>
-                  <th class="px-5 py-4 font-semibold">Tanggal</th>
+                  <th class="px-5 py-4 font-semibold">Waktu Absensi</th>
                   <th class="px-5 py-4 font-semibold">Status</th>
                 </tr>
               </thead>
@@ -605,9 +562,7 @@
             >
               <i data-lucide="file-search" class="h-7 w-7"></i>
             </div>
-
             <h3 class="font-semibold text-slate-700">Data tidak ditemukan</h3>
-
             <p class="mt-1 text-sm text-slate-400">
               Belum ada data kehadiran yang sesuai dengan filter.
             </p>
@@ -620,7 +575,6 @@
           </div>
         </section>
 
-        <!-- FOOTER -->
         <footer
           class="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400"
         >
@@ -629,10 +583,9 @@
       </section>
     </main>
 
-    <!-- FIREBASE SCRIPT -->
     <script type="module">
       // =====================================
-      // 1. FIREBASE IMPORT
+      // FIREBASE IMPORT
       // =====================================
 
       import { auth, db, authPersistence } from "../js/firebase.js";
@@ -650,7 +603,7 @@
       } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
       // =====================================
-      // 2. ELEMENTS
+      // ELEMENTS
       // =====================================
 
       const attendanceTable = document.getElementById("attendanceTable");
@@ -663,12 +616,11 @@
       const notification = document.getElementById("notification");
 
       // =====================================
-      // 3. VARIABLES
+      // VARIABLES
       // =====================================
 
       let allAttendance = [];
       let filteredAttendance = [];
-
       let allCourses = [];
       let allClasses = [];
       let allClassMembers = [];
@@ -679,7 +631,7 @@
       let pageInitialized = false;
 
       // =====================================
-      // 4. NOTIFICATION
+      // NOTIFICATION
       // =====================================
 
       function showNotification(message, type = "error") {
@@ -708,14 +660,13 @@
       }
 
       // =====================================
-      // 5. FORMAT TANGGAL INDONESIA
+      // FORMAT TANGGAL
       // =====================================
 
       function formatDate(dateString) {
         if (!dateString) return "-";
 
         const value = String(dateString);
-
         const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
 
         if (match) {
@@ -742,9 +693,7 @@
 
         const date = new Date(value);
 
-        if (Number.isNaN(date.getTime())) {
-          return value;
-        }
+        if (Number.isNaN(date.getTime())) return value;
 
         return new Intl.DateTimeFormat("id-ID", {
           day: "numeric",
@@ -764,7 +713,125 @@
       }
 
       // =====================================
-      // 6. ADMIN AUTHENTICATION
+      // AMBIL WAKTU ABSENSI
+      // =====================================
+
+      function getAttendanceDate(item) {
+        const value =
+          item.createdAt ??
+          item.timestamp ??
+          item.attendedAt ??
+          item.scannedAt ??
+          item.date ??
+          null;
+
+        if (!value) return null;
+
+        // Firestore Timestamp
+        if (typeof value.toDate === "function") {
+          return value.toDate();
+        }
+
+        // JavaScript Date
+        if (value instanceof Date) {
+          return value;
+        }
+
+        // Unix timestamp
+        if (typeof value === "number") {
+          // Mendukung Unix timestamp dalam detik maupun milidetik
+          const timestamp = value < 1000000000000 ? value * 1000 : value;
+          const date = new Date(timestamp);
+
+          return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        // String tanggal / waktu
+        if (typeof value === "string") {
+          const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+          if (match) {
+            return new Date(
+              Number(match[1]),
+              Number(match[2]) - 1,
+              Number(match[3]),
+            );
+          }
+
+          const date = new Date(value);
+          return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        // Object timestamp {seconds, nanoseconds}
+        if (typeof value === "object" && typeof value.seconds === "number") {
+          return new Date(value.seconds * 1000);
+        }
+
+        return null;
+      }
+
+      // =====================================
+      // FORMAT WAKTU DENGAN TITIK TENGAH + WITA
+      // =====================================
+
+      function formatDateTime(item) {
+        const date = getAttendanceDate(item);
+
+        if (!date || Number.isNaN(date.getTime())) {
+          return "-";
+        }
+
+        const formattedDate = new Intl.DateTimeFormat("id-ID", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        const formattedTime = new Intl.DateTimeFormat("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        return `${formattedDate} • ${formattedTime} WITA`;
+      }
+
+      // =====================================
+      // FILTER TANGGAL MENGGUNAKAN FIELD DATE
+      // =====================================
+
+      function getAttendanceDateString(item) {
+        if (item.date) {
+          if (typeof item.date === "string") {
+            return item.date.substring(0, 10);
+          }
+
+          if (typeof item.date.toDate === "function") {
+            const date = item.date.toDate();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return `${year}-${month}-${day}`;
+          }
+        }
+
+        const date = getAttendanceDate(item);
+
+        if (!date) return "";
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
+
+      // =====================================
+      // ADMIN AUTHENTICATION
       // =====================================
 
       async function checkAdmin(user) {
@@ -797,7 +864,7 @@
       }
 
       // =====================================
-      // 7. LOAD COURSE CLASSES
+      // LOAD COURSE CLASSES
       // =====================================
 
       async function loadCourseClasses() {
@@ -830,7 +897,7 @@
       }
 
       // =====================================
-      // 8. LOAD CLASS MEMBERS
+      // LOAD CLASS MEMBERS
       // =====================================
 
       async function loadClassMembers() {
@@ -864,18 +931,22 @@
       }
 
       // =====================================
-      // 9. GET MEETING NUMBER
+      // GET MEETING NUMBER
       // =====================================
 
       function getMeetingNumber(item) {
         const value =
-          item.meetingNumber ?? item.meeting ?? item.pertemuan ?? "";
+          item.meetingNumber ??
+          item.meeting ??
+          item.meetingNo ??
+          item.pertemuan ??
+          "";
 
         return String(value).trim();
       }
 
       // =====================================
-      // 10. NORMALISASI DATA ABSENSI
+      // NORMALISASI DATA ABSENSI
       // =====================================
 
       function normalizeAttendance(item) {
@@ -920,7 +991,7 @@
       }
 
       // =====================================
-      // 11. LOAD ATTENDANCE
+      // LOAD ATTENDANCE
       // =====================================
 
       async function loadAttendance() {
@@ -946,10 +1017,11 @@
         allAttendance = allAttendance.map(normalizeAttendance);
 
         allAttendance.sort((a, b) => {
-          const dateCompare = (b.date || "").localeCompare(a.date || "");
+          const dateA = getAttendanceDate(a)?.getTime() || 0;
+          const dateB = getAttendanceDate(b)?.getTime() || 0;
 
-          if (dateCompare !== 0) {
-            return dateCompare;
+          if (dateA !== dateB) {
+            return dateB - dateA;
           }
 
           return (a.studentName || "").localeCompare(b.studentName || "");
@@ -957,7 +1029,7 @@
       }
 
       // =====================================
-      // 12. BUILD COURSE FILTER
+      // BUILD COURSE FILTER
       // =====================================
 
       function buildCourseFilter() {
@@ -996,16 +1068,14 @@
 
         allCourses.forEach((course) => {
           const option = document.createElement("option");
-
           option.value = course.id;
           option.textContent = `${course.code} - ${course.name}`;
-
           courseFilter.appendChild(option);
         });
       }
 
       // =====================================
-      // 13. BUILD CLASS FILTER
+      // BUILD CLASS FILTER
       // =====================================
 
       function buildClassFilter() {
@@ -1060,10 +1130,8 @@
 
         classes.forEach((item) => {
           const option = document.createElement("option");
-
           option.value = item.id;
           option.textContent = item.name;
-
           classFilter.appendChild(option);
         });
 
@@ -1075,12 +1143,13 @@
       }
 
       // =====================================
-      // 14. BUILD MEETING FILTER
+      // BUILD MEETING FILTER
       // =====================================
 
       function buildMeetingFilter() {
         const selectedCourse = courseFilter.value;
         const selectedClass = classFilter.value;
+        const previousValue = meetingFilter.value;
 
         meetingFilter.innerHTML = "";
 
@@ -1145,10 +1214,14 @@
 
           meetingFilter.appendChild(option);
         });
+
+        if (meetings.includes(previousValue)) {
+          meetingFilter.value = previousValue;
+        }
       }
 
       // =====================================
-      // 15. FILTER DATA
+      // APPLY FILTERS
       // =====================================
 
       function applyFilters() {
@@ -1175,6 +1248,8 @@
         }
 
         filteredAttendance = allAttendance.filter((item) => {
+          const itemDate = getAttendanceDateString(item);
+
           const matchesCourse =
             !selectedCourse || item.courseId === selectedCourse;
 
@@ -1183,9 +1258,9 @@
           const matchesMeeting =
             !selectedMeeting || getMeetingNumber(item) === selectedMeeting;
 
-          const matchesStart = !fromDate || (item.date || "") >= fromDate;
+          const matchesStart = !fromDate || itemDate >= fromDate;
 
-          const matchesEnd = !toDate || (item.date || "") <= toDate;
+          const matchesEnd = !toDate || itemDate <= toDate;
 
           const matchesSearch =
             !keyword ||
@@ -1211,7 +1286,7 @@
       }
 
       // =====================================
-      // 16. REPORT INFO
+      // REPORT INFO
       // =====================================
 
       function updateReportInfo() {
@@ -1255,7 +1330,7 @@
       }
 
       // =====================================
-      // 17. RENDER TABLE
+      // RENDER TABLE
       // =====================================
 
       function renderTable() {
@@ -1279,7 +1354,6 @@
 
         filteredAttendance.forEach((item, index) => {
           const row = document.createElement("tr");
-
           row.className = "transition hover:bg-slate-50";
 
           const meetingNumber = getMeetingNumber(item);
@@ -1291,7 +1365,7 @@
             item.courseName || "-",
             item.className || "-",
             meetingNumber ? `Pertemuan ${meetingNumber}` : "-",
-            formatDate(item.date),
+            formatDateTime(item),
             item.status || "-",
           ];
 
@@ -1306,6 +1380,10 @@
 
             if (cellIndex === 4) {
               cell.classList.add("font-medium", "text-blue-700");
+            }
+
+            if (cellIndex === 6) {
+              cell.classList.add("text-xs", "text-slate-600");
             }
 
             if (cellIndex === 7) {
@@ -1329,7 +1407,7 @@
       }
 
       // =====================================
-      // 18. STATISTICS
+      // STATISTICS
       // =====================================
 
       function updateStatistics() {
@@ -1349,7 +1427,7 @@
               item.courseId,
               item.classId,
               getMeetingNumber(item),
-              item.date || "",
+              getAttendanceDateString(item),
             ].join("_");
           }),
         );
@@ -1359,7 +1437,7 @@
       }
 
       // =====================================
-      // 19. FILTER EVENTS
+      // FILTER EVENTS
       // =====================================
 
       courseFilter.addEventListener("change", () => {
@@ -1379,7 +1457,7 @@
       searchInput.addEventListener("input", applyFilters);
 
       // =====================================
-      // 20. RESET FILTER
+      // RESET FILTER
       // =====================================
 
       document.getElementById("resetButton").addEventListener("click", () => {
@@ -1396,7 +1474,7 @@
       });
 
       // =====================================
-      // 21. EXPORT INFORMATION
+      // EXPORT INFORMATION
       // =====================================
 
       function getExportInformation() {
@@ -1416,6 +1494,7 @@
           classItem: selectedClass,
 
           courseName: selectedCourse?.name || "Semua Mata Kuliah",
+
           courseCode: selectedCourse?.code || "-",
 
           className: classFilter.value
@@ -1427,12 +1506,6 @@
             : "Semua Pertemuan",
 
           meetingNumber: meetingFilter.value || "",
-
-          startDate: startDate.value
-            ? formatDate(startDate.value)
-            : "Semua Tanggal",
-
-          endDate: endDate.value ? formatDate(endDate.value) : "Semua Tanggal",
 
           dateRange:
             startDate.value || endDate.value
@@ -1457,7 +1530,7 @@
                 item.courseId,
                 item.classId,
                 getMeetingNumber(item),
-                item.date || "",
+                getAttendanceDateString(item),
               ].join("_");
             }),
           ).size,
@@ -1465,7 +1538,7 @@
       }
 
       // =====================================
-      // 22. EXPORT FILE NAME
+      // EXPORT FILE NAME
       // =====================================
 
       function getExportFileName(extension) {
@@ -1501,7 +1574,7 @@
       }
 
       // =====================================
-      // 23. DATA EXPORT
+      // DATA EXPORT
       // =====================================
 
       function getExportRows() {
@@ -1516,14 +1589,14 @@
             mataKuliah: item.courseName || "-",
             kelas: item.className || "Kelas belum tercatat",
             pertemuan: meetingNumber ? `Pertemuan ${meetingNumber}` : "-",
-            tanggal: formatDate(item.date),
+            waktu: formatDateTime(item),
             status: item.status || "-",
           };
         });
       }
 
       // =====================================
-      // 24. EXPORT EXCEL
+      // EXPORT EXCEL
       // =====================================
 
       document.getElementById("exportButton").addEventListener("click", () => {
@@ -1541,7 +1614,6 @@
           showNotification(
             "Library Excel gagal dimuat dengan lengkap. Periksa koneksi internet lalu muat ulang halaman.",
           );
-
           return;
         }
 
@@ -1557,7 +1629,7 @@
             "Mata Kuliah": item.mataKuliah,
             Kelas: item.kelas,
             Pertemuan: item.pertemuan,
-            Tanggal: item.tanggal,
+            Waktu: item.waktu,
             Status: item.status,
           }));
 
@@ -1585,7 +1657,7 @@
             { wch: 30 },
             { wch: 20 },
             { wch: 16 },
-            { wch: 24 },
+            { wch: 48 },
             { wch: 14 },
           ];
 
@@ -1627,13 +1699,12 @@
           );
         } catch (error) {
           console.error("Export Excel error:", error);
-
           showNotification("Gagal membuat file Excel: " + error.message);
         }
       });
 
       // =====================================
-      // 25. LOAD LIBRARY PDF
+      // LOAD PDF LIBRARY
       // =====================================
 
       function loadScript(src, timeout = 15000) {
@@ -1645,7 +1716,6 @@
 
           const timer = setTimeout(() => {
             script.remove();
-
             reject(new Error("Waktu pemuatan library habis: " + src));
           }, timeout);
 
@@ -1657,7 +1727,6 @@
           script.onerror = () => {
             clearTimeout(timer);
             script.remove();
-
             reject(new Error("Gagal memuat library: " + src));
           };
 
@@ -1689,7 +1758,6 @@
       }
 
       async function loadPdfLibraries() {
-        // LOAD JSPDF
         await loadFirstAvailable(
           [
             "https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js",
@@ -1701,8 +1769,6 @@
         );
 
         const jsPDF = window.jspdf.jsPDF;
-
-        // CEK AUTOTABLE
         const testPdf = new jsPDF();
 
         if (typeof testPdf.autoTable !== "function") {
@@ -1720,7 +1786,6 @@
           );
         }
 
-        // VALIDASI AKHIR
         const finalTest = new jsPDF();
 
         if (typeof finalTest.autoTable !== "function") {
@@ -1731,7 +1796,7 @@
       }
 
       // =====================================
-      // 26. EXPORT PDF
+      // EXPORT PDF
       // =====================================
 
       document
@@ -1748,7 +1813,6 @@
 
           try {
             button.disabled = true;
-
             button.innerHTML = `
               <span class="animate-pulse">Menyiapkan PDF...</span>
             `;
@@ -1766,7 +1830,6 @@
               format: "a4",
             });
 
-            // JUDUL
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(16);
 
@@ -1784,7 +1847,6 @@
             pdf.setDrawColor(200, 200, 200);
             pdf.line(14, 27, 283, 27);
 
-            // INFORMASI LAPORAN
             pdf.setFont("helvetica", "bold");
             pdf.setFontSize(9);
 
@@ -1816,7 +1878,6 @@
               maxWidth: 135,
             });
 
-            // RINGKASAN
             pdf.setFont("helvetica", "bold");
 
             pdf.text(`Total Kehadiran: ${info.totalAttendance}`, 200, 34);
@@ -1847,7 +1908,6 @@
               tableStartY = 72;
             }
 
-            // TABEL KEHADIRAN
             if (typeof pdf.autoTable !== "function") {
               throw new Error("Plugin AutoTable tidak tersedia.");
             }
@@ -1864,7 +1924,7 @@
                   "Mata Kuliah",
                   "Kelas",
                   "Pertemuan",
-                  "Tanggal",
+                  "Waktu",
                   "Status",
                 ],
               ],
@@ -1877,7 +1937,7 @@
                 item.mataKuliah,
                 item.kelas,
                 item.pertemuan,
-                item.tanggal,
+                item.waktu,
                 item.status,
               ]),
 
@@ -1902,43 +1962,15 @@
               },
 
               columnStyles: {
-                0: {
-                  cellWidth: 10,
-                  halign: "center",
-                },
-
-                1: {
-                  cellWidth: 23,
-                },
-
-                2: {
-                  cellWidth: 37,
-                },
-
-                3: {
-                  cellWidth: 22,
-                },
-
-                4: {
-                  cellWidth: 38,
-                },
-
-                5: {
-                  cellWidth: 22,
-                },
-
-                6: {
-                  cellWidth: 23,
-                },
-
-                7: {
-                  cellWidth: 31,
-                },
-
-                8: {
-                  cellWidth: 17,
-                  halign: "center",
-                },
+                0: { cellWidth: 9, halign: "center" },
+                1: { cellWidth: 21 },
+                2: { cellWidth: 34 },
+                3: { cellWidth: 20 },
+                4: { cellWidth: 34 },
+                5: { cellWidth: 20 },
+                6: { cellWidth: 20 },
+                7: { cellWidth: 45 },
+                8: { cellWidth: 16, halign: "center" },
               },
 
               margin: {
@@ -1948,7 +1980,6 @@
               },
             });
 
-            // FOOTER DAN NOMOR HALAMAN
             const totalPages = pdf.internal.getNumberOfPages();
 
             for (let page = 1; page <= totalPages; page++) {
@@ -1975,16 +2006,13 @@
               );
             }
 
-            // GENERATE PDF BLOB
             const blob = pdf.output("blob");
 
             if (!blob || blob.size === 0) {
               throw new Error("File PDF kosong atau gagal dibuat.");
             }
 
-            // DOWNLOAD PDF
             const fileUrl = URL.createObjectURL(blob);
-
             const downloadLink = document.createElement("a");
 
             downloadLink.href = fileUrl;
@@ -1992,9 +2020,7 @@
             downloadLink.style.display = "none";
 
             document.body.appendChild(downloadLink);
-
             downloadLink.click();
-
             downloadLink.remove();
 
             setTimeout(() => {
@@ -2023,7 +2049,7 @@
         });
 
       // =====================================
-      // 27. PRINT
+      // PRINT
       // =====================================
 
       document.getElementById("printButton").addEventListener("click", () => {
@@ -2031,7 +2057,7 @@
       });
 
       // =====================================
-      // 28. LOGOUT
+      // LOGOUT
       // =====================================
 
       document
@@ -2043,17 +2069,15 @@
 
           try {
             await signOut(auth);
-
             window.location.replace("../login.html");
           } catch (error) {
             console.error(error);
-
             showNotification("Gagal keluar dari akun administrator.");
           }
         });
 
       // =====================================
-      // 29. MOBILE SIDEBAR
+      // MOBILE SIDEBAR
       // =====================================
 
       const sidebar = document.getElementById("sidebar");
@@ -2076,7 +2100,7 @@
       }
 
       // =====================================
-      // 30. INITIALIZATION
+      // INITIALIZATION
       // =====================================
 
       async function initializePage() {
@@ -2116,7 +2140,6 @@
           });
         } catch (error) {
           console.error(error);
-
           showNotification("Gagal menginisialisasi Firebase.");
         }
       }
@@ -2124,7 +2147,6 @@
       initializePage();
     </script>
 
-    <!-- LUCIDE -->
     <script>
       if (window.lucide) {
         lucide.createIcons();

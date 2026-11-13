@@ -27,19 +27,24 @@
       * {
         font-family: "Poppins", sans-serif;
       }
+
       body {
         background: #f8fafc;
       }
+
       .sidebar {
         transition: transform 0.3s ease;
       }
+
       .nav-link {
         transition: all 0.2s ease;
       }
+
       .nav-link:hover {
         background: #eff6ff;
         color: #2563eb;
       }
+
       .nav-active,
       .nav-active:hover {
         background: #2563eb;
@@ -50,6 +55,7 @@
         .sidebar {
           transform: translateX(-100%);
         }
+
         .sidebar.show {
           transform: translateX(0);
         }
@@ -59,10 +65,12 @@
         body * {
           visibility: hidden;
         }
+
         #qrPrintArea,
         #qrPrintArea * {
           visibility: visible;
         }
+
         #qrPrintArea {
           position: absolute;
           left: 0;
@@ -72,6 +80,7 @@
           flex-direction: column;
           align-items: center;
         }
+
         #qrPrintArea button {
           display: none;
         }
@@ -96,10 +105,12 @@
         >
           <i data-lucide="qr-code" class="h-6 w-6"></i>
         </div>
+
         <div>
           <h1 class="text-lg font-bold text-slate-800">Absensi QR</h1>
           <p class="text-xs text-slate-400">Administrator Panel</p>
         </div>
+
         <button id="closeSidebar" class="ml-auto text-slate-400 md:hidden">
           <i data-lucide="x" class="h-5 w-5"></i>
         </button>
@@ -111,25 +122,32 @@
         >
           Menu Utama
         </p>
+
         <nav class="space-y-2">
           <a
             href="../dashboard.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
-            <i data-lucide="layout-dashboard" class="h-5 w-5"></i> Dashboard
+            <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+            Dashboard
           </a>
+
           <a
             href="mahasiswa.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
-            <i data-lucide="users" class="h-5 w-5"></i> Data Mahasiswa
+            <i data-lucide="users" class="h-5 w-5"></i>
+            Data Mahasiswa
           </a>
+
           <a
             href="mata-kuliah.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
-            <i data-lucide="book-open" class="h-5 w-5"></i> Mata Kuliah
+            <i data-lucide="book-open" class="h-5 w-5"></i>
+            Mata Kuliah
           </a>
+
           <a
             href="kelas.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
@@ -137,32 +155,38 @@
             <i data-lucide="users-round" class="h-5 w-5"></i>
             Pengelompokan Kelas
           </a>
+
           <a
             href="sesi-absensi.html"
             class="nav-link nav-active flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium"
           >
-            <i data-lucide="qr-code" class="h-5 w-5"></i> Sesi Absensi
+            <i data-lucide="qr-code" class="h-5 w-5"></i>
+            Sesi Absensi
           </a>
+
           <a
             href="laporan.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
-            <i data-lucide="file-chart-column" class="h-5 w-5"></i> Laporan
-            Absensi
+            <i data-lucide="file-chart-column" class="h-5 w-5"></i>
+            Laporan Absensi
           </a>
         </nav>
 
         <div class="my-6 border-t border-slate-100"></div>
+
         <p
           class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
         >
           Akun
         </p>
+
         <button
           id="logoutButton"
           class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500"
         >
-          <i data-lucide="log-out" class="h-5 w-5"></i> Keluar
+          <i data-lucide="log-out" class="h-5 w-5"></i>
+          Keluar
         </button>
       </div>
 
@@ -173,6 +197,7 @@
           >
             <i data-lucide="shield-check" class="h-5 w-5"></i>
           </div>
+
           <div>
             <p class="text-xs font-semibold text-slate-700">Administrator</p>
             <p class="text-xs text-slate-400">Panel Pengelola</p>
@@ -193,6 +218,7 @@
           >
             <i data-lucide="menu" class="h-6 w-6"></i>
           </button>
+
           <div>
             <h2 class="text-lg font-bold text-slate-800 sm:text-xl">
               Sesi Absensi
@@ -202,6 +228,7 @@
             </p>
           </div>
         </div>
+
         <div class="flex items-center gap-3">
           <div class="hidden text-right sm:block">
             <p id="adminName" class="text-sm font-semibold text-slate-700">
@@ -209,6 +236,7 @@
             </p>
             <p class="text-xs text-slate-400">Administrator</p>
           </div>
+
           <div
             class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
           >
@@ -229,11 +257,13 @@
               Buat sesi perkuliahan dan tampilkan QR Code untuk mahasiswa.
             </p>
           </div>
+
           <button
             id="addButton"
             class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
           >
-            <i data-lucide="plus" class="h-5 w-5"></i> Buat Sesi Absensi
+            <i data-lucide="plus" class="h-5 w-5"></i>
+            Buat Sesi Absensi
           </button>
         </div>
 
@@ -248,6 +278,7 @@
               >
                 <i data-lucide="calendar-days" class="h-6 w-6"></i>
               </div>
+
               <div>
                 <p class="text-sm text-slate-400">Total Sesi</p>
                 <h3
@@ -269,6 +300,7 @@
               >
                 <i data-lucide="radio" class="h-6 w-6"></i>
               </div>
+
               <div>
                 <p class="text-sm text-slate-400">Sesi Berlangsung</p>
                 <h3
@@ -290,6 +322,7 @@
               >
                 <i data-lucide="calendar-check" class="h-6 w-6"></i>
               </div>
+
               <div>
                 <p class="text-sm text-slate-400">Sesi Selesai</p>
                 <h3
@@ -316,11 +349,13 @@
                 Riwayat sesi absensi yang telah dibuat
               </p>
             </div>
+
             <div class="relative w-full sm:max-w-xs">
               <i
                 data-lucide="search"
                 class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
               ></i>
+
               <input
                 id="searchInput"
                 type="text"
@@ -346,6 +381,7 @@
                   <th class="px-5 py-4 text-center">Aksi</th>
                 </tr>
               </thead>
+
               <tbody id="sessionTable">
                 <tr>
                   <td
@@ -358,6 +394,7 @@
               </tbody>
             </table>
           </div>
+
           <div class="border-t border-slate-100 px-5 py-4">
             <p id="tableInfo" class="text-xs text-slate-400">
               Menampilkan 0 sesi
@@ -388,6 +425,7 @@
               Tentukan mata kuliah, kelas, dan waktu absensi.
             </p>
           </div>
+
           <button
             id="closeModal"
             class="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
@@ -401,8 +439,10 @@
             <label
               for="courseInput"
               class="mb-2 block text-sm font-medium text-slate-700"
-              >Mata Kuliah</label
             >
+              Mata Kuliah
+            </label>
+
             <select
               id="courseInput"
               required
@@ -417,8 +457,10 @@
             <label
               for="classInput"
               class="mb-2 block text-sm font-medium text-slate-700"
-              >Kelas</label
             >
+              Kelas
+            </label>
+
             <select
               id="classInput"
               required
@@ -427,6 +469,7 @@
             >
               <option value="">Pilih mata kuliah terlebih dahulu</option>
             </select>
+
             <p id="classInfo" class="mt-2 text-xs text-slate-400">
               Pilih mata kuliah untuk menampilkan kelas yang tersedia.
             </p>
@@ -436,8 +479,10 @@
             <label
               for="meetingInput"
               class="mb-2 block text-sm font-medium text-slate-700"
-              >Pertemuan Ke-</label
             >
+              Pertemuan Ke-
+            </label>
+
             <input
               id="meetingInput"
               type="number"
@@ -454,8 +499,10 @@
               <label
                 for="dateInput"
                 class="mb-2 block text-sm font-medium text-slate-700"
-                >Tanggal</label
               >
+                Tanggal
+              </label>
+
               <input
                 id="dateInput"
                 type="date"
@@ -463,12 +510,15 @@
                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
               />
             </div>
+
             <div>
               <label
                 for="timeInput"
                 class="mb-2 block text-sm font-medium text-slate-700"
-                >Waktu Mulai</label
               >
+                Waktu Mulai
+              </label>
+
               <input
                 id="timeInput"
                 type="time"
@@ -482,8 +532,10 @@
             <label
               for="durationInput"
               class="mb-2 block text-sm font-medium text-slate-700"
-              >Durasi Absensi</label
             >
+              Durasi Absensi
+            </label>
+
             <select
               id="durationInput"
               required
@@ -523,6 +575,7 @@
             >
               Batal
             </button>
+
             <button
               type="submit"
               id="saveButton"
@@ -547,15 +600,19 @@
           >
             <i data-lucide="qr-code" class="h-7 w-7"></i>
           </div>
+
           <h3 class="text-lg font-bold text-slate-800">QR Code Absensi</h3>
+
           <p
             id="qrCourseName"
             class="mt-1 text-sm font-medium text-blue-600"
           ></p>
+
           <p
             id="qrClassName"
             class="mt-1 text-sm font-semibold text-slate-700"
           ></p>
+
           <p id="qrLecturer" class="mt-1 text-xs text-slate-500"></p>
           <p id="qrMeeting" class="mt-1 text-xs text-slate-400"></p>
 
@@ -566,6 +623,7 @@
           </div>
 
           <p id="qrExpiry" class="text-xs text-slate-500"></p>
+
           <p class="mt-2 text-xs text-slate-400">
             Pindai QR Code menggunakan halaman scan mahasiswa.
           </p>
@@ -575,8 +633,10 @@
               id="printQrButton"
               class="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700"
             >
-              <i data-lucide="printer" class="mr-1 inline h-4 w-4"></i> Cetak QR
+              <i data-lucide="printer" class="mr-1 inline h-4 w-4"></i>
+              Cetak QR
             </button>
+
             <button
               id="closeQrButton"
               class="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
@@ -661,13 +721,16 @@
       document
         .getElementById("closeSidebar")
         .addEventListener("click", closeSidebar);
+
       overlay.addEventListener("click", closeSidebar);
 
       // TOAST
       function showToast(message, type = "success") {
         clearTimeout(toastTimer);
+
         const toast = document.getElementById("toast");
         toast.textContent = message;
+
         toast.className =
           "fixed bottom-5 right-5 z-[90] max-w-sm rounded-xl px-5 py-4 text-sm font-medium text-white shadow-xl " +
           (type === "success" ? "bg-emerald-600" : "bg-red-600");
@@ -675,6 +738,7 @@
         toastTimer = setTimeout(() => toast.classList.add("hidden"), 3500);
       }
 
+      // ESCAPE HTML
       function escapeHTML(value = "") {
         return String(value).replace(
           /[&<>"']/g,
@@ -689,22 +753,42 @@
         );
       }
 
+      // FORMAT TANGGAL DAN WAKTU WITA
       function formatDate(timestamp) {
-        if (!timestamp || typeof timestamp.toDate !== "function") return "-";
+        if (!timestamp || typeof timestamp.toDate !== "function") {
+          return "-";
+        }
 
-        return timestamp.toDate().toLocaleString("id-ID", {
-          day: "2-digit",
-          month: "short",
+        const date = timestamp.toDate();
+
+        if (Number.isNaN(date.getTime())) {
+          return "-";
+        }
+
+        const dateText = new Intl.DateTimeFormat("id-ID", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
           year: "numeric",
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        const timeText = new Intl.DateTimeFormat("id-ID", {
           hour: "2-digit",
           minute: "2-digit",
-        });
+          hourCycle: "h23",
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        return `${dateText} • ${timeText} WITA`;
       }
 
+      // SESSION STATUS
       function getSessionStatus(session) {
         if (session.status !== "active") return "closed";
 
         const now = Date.now();
+
         const startsAt = session.startsAt?.toDate?.().getTime() ?? 0;
         const expiresAt = session.expiresAt?.toDate?.().getTime() ?? 0;
 
@@ -731,20 +815,20 @@
         );
 
         courseInput.innerHTML = `
-        <option value="">Pilih Mata Kuliah</option>
-        ${courses
-          .map((course) => {
-            const name = course.name || course.courseName || "Tanpa Nama";
-            const code = course.code || course.courseCode || course.id;
+          <option value="">Pilih Mata Kuliah</option>
+          ${courses
+            .map((course) => {
+              const name = course.name || course.courseName || "Tanpa Nama";
+              const code = course.code || course.courseCode || course.id;
 
-            return `
-            <option value="${escapeHTML(course.id)}">
-              ${escapeHTML(code)} - ${escapeHTML(name)}
-            </option>
-          `;
-          })
-          .join("")}
-      `;
+              return `
+                <option value="${escapeHTML(course.id)}">
+                  ${escapeHTML(code)} - ${escapeHTML(name)}
+                </option>
+              `;
+            })
+            .join("")}
+        `;
 
         if (!courses.length) {
           courseInput.innerHTML =
@@ -774,8 +858,10 @@
         if (!courseId) {
           classInput.innerHTML =
             '<option value="">Pilih mata kuliah terlebih dahulu</option>';
+
           classInfo.textContent =
             "Pilih mata kuliah untuk menampilkan kelas yang tersedia.";
+
           return;
         }
 
@@ -786,8 +872,10 @@
         if (!filteredClasses.length) {
           classInput.innerHTML =
             '<option value="">Belum ada kelas untuk mata kuliah ini</option>';
+
           classInfo.textContent =
             "Tambahkan kelas pada menu pengelolaan kelas terlebih dahulu.";
+
           return;
         }
 
@@ -799,19 +887,20 @@
         );
 
         classInput.innerHTML = `
-        <option value="">Pilih Kelas</option>
-        ${filteredClasses
-          .map(
-            (item) => `
-          <option value="${escapeHTML(item.id)}">
-            ${escapeHTML(item.className || item.name || item.id)}
-          </option>
-        `,
-          )
-          .join("")}
-      `;
+          <option value="">Pilih Kelas</option>
+          ${filteredClasses
+            .map(
+              (item) => `
+                <option value="${escapeHTML(item.id)}">
+                  ${escapeHTML(item.className || item.name || item.id)}
+                </option>
+              `,
+            )
+            .join("")}
+        `;
 
         classInput.disabled = false;
+
         classInfo.textContent = `${filteredClasses.length} kelas tersedia untuk mata kuliah ini.`;
       }
 
@@ -820,12 +909,12 @@
       // LOAD SESSIONS
       async function loadSessions() {
         sessionTable.innerHTML = `
-        <tr>
-          <td colspan="8" class="px-5 py-12 text-center text-sm text-slate-400">
-            Memuat sesi absensi...
-          </td>
-        </tr>
-      `;
+          <tr>
+            <td colspan="8" class="px-5 py-12 text-center text-sm text-slate-400">
+              Memuat sesi absensi...
+            </td>
+          </tr>
+        `;
 
         try {
           const snapshot = await getDocs(collection(db, "sessions"));
@@ -838,6 +927,7 @@
           sessions.sort((a, b) => {
             const first = a.startsAt?.toDate?.().getTime() || 0;
             const second = b.startsAt?.toDate?.().getTime() || 0;
+
             return second - first;
           });
 
@@ -846,12 +936,12 @@
           console.error("Load sessions error:", error);
 
           sessionTable.innerHTML = `
-          <tr>
-            <td colspan="8" class="px-5 py-12 text-center text-sm text-red-500">
-              Gagal mengambil data sesi. Periksa Firestore Rules.
-            </td>
-          </tr>
-        `;
+            <tr>
+              <td colspan="8" class="px-5 py-12 text-center text-sm text-red-500">
+                Gagal mengambil data sesi. Periksa Firestore Rules.
+              </td>
+            </tr>
+          `;
 
           showToast("Gagal memuat sesi absensi.", "error");
         }
@@ -876,23 +966,30 @@
         const statuses = sessions.map(getSessionStatus);
 
         totalSessions.textContent = sessions.length;
+
         activeSessions.textContent = statuses.filter(
-          (s) => s === "active",
+          (status) => status === "active",
         ).length;
+
         closedSessions.textContent = statuses.filter(
-          (s) => s !== "active",
+          (status) => status !== "active",
         ).length;
 
         tableInfo.textContent = `Menampilkan ${filtered.length} dari ${sessions.length} sesi`;
 
         if (!filtered.length) {
           sessionTable.innerHTML = `
-          <tr>
-            <td colspan="8" class="px-5 py-12 text-center text-sm text-slate-400">
-              ${keyword ? "Sesi tidak ditemukan." : "Belum ada sesi absensi. Silakan buat sesi baru."}
-            </td>
-          </tr>
-        `;
+            <tr>
+              <td colspan="8" class="px-5 py-12 text-center text-sm text-slate-400">
+                ${
+                  keyword
+                    ? "Sesi tidak ditemukan."
+                    : "Belum ada sesi absensi. Silakan buat sesi baru."
+                }
+              </td>
+            </tr>
+          `;
+
           return;
         }
 
@@ -915,55 +1012,76 @@
             }[status];
 
             return `
-          <tr class="border-t border-slate-100 transition hover:bg-slate-50">
-            <td class="px-5 py-4 text-sm text-slate-500">${index + 1}</td>
+              <tr class="border-t border-slate-100 transition hover:bg-slate-50">
+                <td class="px-5 py-4 text-sm text-slate-500">
+                  ${index + 1}
+                </td>
 
-            <td class="px-5 py-4">
-              <p class="text-sm font-semibold text-slate-700">${escapeHTML(session.courseName || "-")}</p>
-              <p class="mt-1 text-xs text-slate-400">${escapeHTML(session.courseCode || "")}</p>
-            </td>
+                <td class="px-5 py-4">
+                  <p class="text-sm font-semibold text-slate-700">
+                    ${escapeHTML(session.courseName || "-")}
+                  </p>
 
-            <td class="px-5 py-4">
-              <p class="text-sm font-semibold text-slate-700">${escapeHTML(session.className || "-")}</p>
-              <p class="mt-1 text-xs text-slate-400">${escapeHTML(session.lecturerName || "")}</p>
-            </td>
+                  <p class="mt-1 text-xs text-slate-400">
+                    ${escapeHTML(session.courseCode || "")}
+                  </p>
+                </td>
 
-            <td class="px-5 py-4 text-sm text-slate-600">
-              Pertemuan ${escapeHTML(session.meeting || "-")}
-            </td>
+                <td class="px-5 py-4">
+                  <p class="text-sm font-semibold text-slate-700">
+                    ${escapeHTML(session.className || "-")}
+                  </p>
 
-            <td class="px-5 py-4 text-sm text-slate-500">${formatDate(session.startsAt)}</td>
-            <td class="px-5 py-4 text-sm text-slate-500">${formatDate(session.expiresAt)}</td>
+                  <p class="mt-1 text-xs text-slate-400">
+                    ${escapeHTML(session.lecturerName || "")}
+                  </p>
+                </td>
 
-            <td class="px-5 py-4">
-              <span class="rounded-full px-3 py-1.5 text-xs font-semibold ${statusClass}">
-                ${statusLabel}
-              </span>
-            </td>
+                <td class="px-5 py-4 text-sm text-slate-600">
+                  Pertemuan ${escapeHTML(session.meeting || "-")}
+                </td>
 
-            <td class="px-5 py-4">
-              <div class="flex items-center justify-center gap-2">
-                <button data-qr="${escapeHTML(session.id)}"
-                  class="rounded-lg bg-blue-50 p-2 text-blue-600 hover:bg-blue-100"
-                  title="Lihat QR Code">
-                  <i data-lucide="qr-code" class="h-4 w-4"></i>
-                </button>
+                <td class="px-5 py-4 text-sm text-slate-500">
+                  ${formatDate(session.startsAt)}
+                </td>
 
-                ${
-                  status === "active" || status === "scheduled"
-                    ? `
-                  <button data-close="${escapeHTML(session.id)}"
-                    class="rounded-lg bg-red-50 p-2 text-red-600 hover:bg-red-100"
-                    title="Tutup sesi">
-                    <i data-lucide="lock" class="h-4 w-4"></i>
-                  </button>
-                `
-                    : ""
-                }
-              </div>
-            </td>
-          </tr>
-        `;
+                <td class="px-5 py-4 text-sm text-slate-500">
+                  ${formatDate(session.expiresAt)}
+                </td>
+
+                <td class="px-5 py-4">
+                  <span class="rounded-full px-3 py-1.5 text-xs font-semibold ${statusClass}">
+                    ${statusLabel}
+                  </span>
+                </td>
+
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-center gap-2">
+                    <button
+                      data-qr="${escapeHTML(session.id)}"
+                      class="rounded-lg bg-blue-50 p-2 text-blue-600 hover:bg-blue-100"
+                      title="Lihat QR Code"
+                    >
+                      <i data-lucide="qr-code" class="h-4 w-4"></i>
+                    </button>
+
+                    ${
+                      status === "active" || status === "scheduled"
+                        ? `
+                          <button
+                            data-close="${escapeHTML(session.id)}"
+                            class="rounded-lg bg-red-50 p-2 text-red-600 hover:bg-red-100"
+                            title="Tutup sesi"
+                          >
+                            <i data-lucide="lock" class="h-4 w-4"></i>
+                          </button>
+                        `
+                        : ""
+                    }
+                  </div>
+                </td>
+              </tr>
+            `;
           })
           .join("");
 
@@ -993,6 +1111,7 @@
         sessionModal.classList.remove("flex");
 
         sessionForm.reset();
+
         formError.classList.add("hidden");
         formError.textContent = "";
 
@@ -1002,7 +1121,9 @@
 
       document.getElementById("addButton").addEventListener("click", () => {
         sessionForm.reset();
+
         formError.classList.add("hidden");
+
         updateClassOptions();
         setDefaultDateTime();
         openModal();
@@ -1011,6 +1132,7 @@
       document
         .getElementById("closeModal")
         .addEventListener("click", closeModal);
+
       document
         .getElementById("cancelButton")
         .addEventListener("click", closeModal);
@@ -1023,6 +1145,7 @@
       // RANDOM TOKEN: 16 BYTES = 32 HEX CHARACTERS
       function generateToken() {
         const bytes = new Uint8Array(16);
+
         crypto.getRandomValues(bytes);
 
         return Array.from(bytes)
@@ -1045,6 +1168,7 @@
         const duration = Number(durationInput.value);
 
         const course = courses.find((item) => item.id === courseId);
+
         const selectedClass = courseClasses.find((item) => item.id === classId);
 
         if (!course) {
@@ -1074,7 +1198,9 @@
 
         const courseName = course.name || course.courseName || "";
         const courseCode = course.code || course.courseCode || course.id;
+
         const className = selectedClass.className || selectedClass.name || "";
+
         const lecturerName = selectedClass.lecturerName || "";
 
         if (!className) {
@@ -1083,6 +1209,7 @@
         }
 
         const startsAtDate = new Date(`${date}T${time}:00`);
+
         const expiresAtDate = new Date(
           startsAtDate.getTime() + duration * 60000,
         );
@@ -1108,6 +1235,7 @@
           }
 
           const token = generateToken();
+
           const sessionRef = doc(db, "sessions", token);
 
           const sessionData = {
@@ -1129,6 +1257,7 @@
             expiresAt: Timestamp.fromDate(expiresAtDate),
 
             status: "active",
+
             createdAt: serverTimestamp(),
             createdBy: auth.currentUser.uid,
           };
@@ -1141,6 +1270,7 @@
           };
 
           sessions = sessions.filter((item) => item.id !== sessionRef.id);
+
           sessions.unshift(localSession);
 
           renderSessions();
@@ -1152,6 +1282,7 @@
             showQr(sessionRef.id);
           } catch (qrError) {
             console.error("Generate QR error:", qrError);
+
             showToast(
               "Sesi berhasil disimpan, tetapi QR gagal dibuat: " +
                 qrError.message,
@@ -1203,6 +1334,7 @@
         qrCode.innerHTML = "";
 
         const scanUrl = new URL("../mahasiswa/scan.html", window.location.href);
+
         scanUrl.searchParams.set("sessionId", session.id);
         scanUrl.searchParams.set("token", session.token);
 
@@ -1244,6 +1376,7 @@
       document
         .getElementById("closeQrButton")
         .addEventListener("click", closeQr);
+
       document
         .getElementById("printQrButton")
         .addEventListener("click", () => window.print());
@@ -1251,14 +1384,16 @@
       // CLOSE SESSION
       async function closeSession(sessionId) {
         const session = sessions.find((item) => item.id === sessionId);
+
         if (!session) return;
 
         if (
           !confirm(
             `Tutup sesi ${session.courseName}, kelas ${session.className || "-"}, pertemuan ${session.meeting}?`,
           )
-        )
+        ) {
           return;
+        }
 
         try {
           await updateDoc(doc(db, "sessions", sessionId), {
@@ -1267,10 +1402,13 @@
           });
 
           showToast("Sesi berhasil ditutup.");
+
           closeQr();
+
           await loadSessions();
         } catch (error) {
           console.error("Close session error:", error);
+
           showToast("Gagal menutup sesi.", "error");
         }
       }
@@ -1280,8 +1418,13 @@
         const qrButton = event.target.closest("[data-qr]");
         const closeButton = event.target.closest("[data-close]");
 
-        if (qrButton) showQr(qrButton.dataset.qr);
-        if (closeButton) closeSession(closeButton.dataset.close);
+        if (qrButton) {
+          showQr(qrButton.dataset.qr);
+        }
+
+        if (closeButton) {
+          closeSession(closeButton.dataset.close);
+        }
       });
 
       // AUTHENTICATION
@@ -1303,6 +1446,7 @@
 
             if (!adminSnapshot.exists()) {
               await signOut(auth);
+
               window.location.replace("../login.html");
               return;
             }
@@ -1311,6 +1455,7 @@
 
             if (adminData.role !== "admin" || adminData.status !== "active") {
               await signOut(auth);
+
               window.location.replace("../login.html");
               return;
             }
@@ -1323,8 +1468,11 @@
             await loadSessions();
           } catch (error) {
             console.error("Authentication check error:", error);
+
             alert("Gagal memeriksa akses administrator.");
+
             await signOut(auth);
+
             window.location.replace("../login.html");
           }
         });
@@ -1334,13 +1482,17 @@
       document
         .getElementById("logoutButton")
         .addEventListener("click", async () => {
-          if (!confirm("Apakah kamu yakin ingin keluar?")) return;
+          if (!confirm("Apakah kamu yakin ingin keluar?")) {
+            return;
+          }
 
           try {
             await signOut(auth);
+
             window.location.replace("../login.html");
           } catch (error) {
             console.error("Logout error:", error);
+
             showToast("Gagal keluar dari akun.", "error");
           }
         });

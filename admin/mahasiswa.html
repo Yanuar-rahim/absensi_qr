@@ -22,6 +22,7 @@
       * {
         font-family: "Poppins", sans-serif;
       }
+
       body {
         background: #f8fafc;
       }
@@ -53,6 +54,7 @@
         .sidebar {
           transform: translateX(-100%);
         }
+
         .sidebar.show {
           transform: translateX(0);
         }
@@ -315,7 +317,9 @@
               </p>
             </div>
 
-            <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:max-w-4xl xl:grid-cols-4">
+            <div
+              class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 xl:max-w-4xl xl:grid-cols-4"
+            >
               <div class="relative min-w-0">
                 <i
                   data-lucide="search"
@@ -328,33 +332,33 @@
                   class="h-11 w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
-                <select
-                  id="sortField"
-                  class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  aria-label="Urutkan berdasarkan"
-                >
-                  <option value="manual">Urutan manual</option>
-                  <option value="name">Nama mahasiswa</option>
-                  <option value="nim">NIM</option>
-                </select>
 
-                <select
-                  id="sortDirection"
-                  class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  aria-label="Arah pengurutan"
-                >
-                  <option value="asc">A–Z / Terkecil</option>
-                  <option value="desc">Z–A / Terbesar</option>
-                </select>
+              <select
+                id="sortField"
+                class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                aria-label="Urutkan berdasarkan"
+              >
+                <option value="manual">Urutan manual</option>
+                <option value="name">Nama mahasiswa</option>
+                <option value="nim">NIM</option>
+              </select>
 
-                <select
-                  id="cohortFilter"
-                  class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  aria-label="Filter angkatan"
-                >
-                  <option value="all">Semua Angkatan</option>
-                </select>
-              </div>
+              <select
+                id="sortDirection"
+                class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                aria-label="Arah pengurutan"
+              >
+                <option value="asc">A–Z / Terkecil</option>
+                <option value="desc">Z–A / Terbesar</option>
+              </select>
+
+              <select
+                id="cohortFilter"
+                class="h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                aria-label="Filter angkatan"
+              >
+                <option value="all">Semua Angkatan</option>
+              </select>
             </div>
           </div>
 
@@ -441,44 +445,44 @@
         <form id="studentForm" class="space-y-5 p-5">
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:items-start">
             <div>
-            <label
-              for="nimInput"
-              class="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Nomor Induk Mahasiswa (NIM)
-            </label>
+              <label
+                for="nimInput"
+                class="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Nomor Induk Mahasiswa (NIM)
+              </label>
 
-            <input
-              id="nimInput"
-              type="text"
-              required
-              maxlength="30"
-              autocomplete="off"
-              placeholder="Masukkan NIM"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-            <p class="mt-1 text-xs text-slate-400">
-              NIM digunakan sebagai identitas unik mahasiswa.
-            </p>
+              <input
+                id="nimInput"
+                type="text"
+                required
+                maxlength="30"
+                autocomplete="off"
+                placeholder="Masukkan NIM"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+              <p class="mt-1 text-xs text-slate-400">
+                NIM digunakan sebagai identitas unik mahasiswa.
+              </p>
             </div>
 
             <div>
-            <label
-              for="nameInput"
-              class="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Nama Lengkap
-            </label>
+              <label
+                for="nameInput"
+                class="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Nama Lengkap
+              </label>
 
-            <input
-              id="nameInput"
-              type="text"
-              required
-              maxlength="100"
-              autocomplete="off"
-              placeholder="Masukkan nama lengkap"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
+              <input
+                id="nameInput"
+                type="text"
+                required
+                maxlength="100"
+                autocomplete="off"
+                placeholder="Masukkan nama lengkap"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
             </div>
           </div>
 
@@ -590,6 +594,7 @@
       document
         .getElementById("closeSidebar")
         .addEventListener("click", closeSidebar);
+
       overlay.addEventListener("click", closeSidebar);
 
       // =====================================
@@ -628,16 +633,30 @@
         );
       }
 
+      // Format tanggal dan waktu menggunakan zona waktu WITA.
       function formatDate(timestamp) {
         if (!timestamp || typeof timestamp.toDate !== "function") {
           return "-";
         }
 
-        return timestamp.toDate().toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "short",
+        const date = timestamp.toDate();
+
+        const dateText = new Intl.DateTimeFormat("id-ID", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
           year: "numeric",
-        });
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        const timeText = new Intl.DateTimeFormat("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+          timeZone: "Asia/Makassar",
+        }).format(date);
+
+        return `${dateText} • ${timeText} WITA`;
       }
 
       // =====================================
@@ -646,12 +665,12 @@
 
       async function loadStudents() {
         studentTable.innerHTML = `
-                <tr>
-                    <td colspan="5" class="px-5 py-12 text-center text-sm text-slate-400">
-                        Memuat data mahasiswa...
-                    </td>
-                </tr>
-            `;
+          <tr>
+            <td colspan="5" class="px-5 py-12 text-center text-sm text-slate-400">
+              Memuat data mahasiswa...
+            </td>
+          </tr>
+        `;
 
         try {
           const snapshot = await getDocs(collection(db, "students"));
@@ -665,11 +684,13 @@
             const orderA = Number.isFinite(Number(a.sortOrder))
               ? Number(a.sortOrder)
               : Number.MAX_SAFE_INTEGER;
+
             const orderB = Number.isFinite(Number(b.sortOrder))
               ? Number(b.sortOrder)
               : Number.MAX_SAFE_INTEGER;
 
             if (orderA !== orderB) return orderA - orderB;
+
             return (a.name || "").localeCompare(b.name || "", "id");
           });
 
@@ -679,12 +700,12 @@
           console.error("Load students error:", error);
 
           studentTable.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="px-5 py-12 text-center text-sm text-red-500">
-                            Gagal mengambil data. Periksa Firestore Rules dan koneksi Firebase.
-                        </td>
-                    </tr>
-                `;
+            <tr>
+              <td colspan="5" class="px-5 py-12 text-center text-sm text-red-500">
+                Gagal mengambil data. Periksa Firestore Rules dan koneksi Firebase.
+              </td>
+            </tr>
+          `;
 
           showToast("Gagal memuat data mahasiswa.", "error");
         }
@@ -700,22 +721,25 @@
 
       excelInput.addEventListener("change", async (event) => {
         const file = event.target.files[0];
+
         if (!file) return;
 
-        // Reset agar file yang sama dapat dipilih kembali.
         event.target.value = "";
 
         const extension = file.name.split(".").pop().toLowerCase();
+
         if (!["xlsx", "xls"].includes(extension)) {
           showToast("Format file harus .xlsx atau .xls.", "error");
           return;
         }
 
         uploadExcelButton.disabled = true;
+
         uploadExcelButton.innerHTML = `
           <i data-lucide="loader-circle" class="h-5 w-5 animate-spin"></i>
           Memproses Excel...
         `;
+
         lucide.createIcons();
 
         try {
@@ -726,6 +750,7 @@
           }
 
           const buffer = await file.arrayBuffer();
+
           const workbook = XLSX.read(buffer, {
             type: "array",
             cellDates: true,
@@ -735,13 +760,13 @@
             throw new Error("File Excel tidak memiliki sheet.");
           }
 
-          // Prioritaskan sheet bernama Absensi, jika tidak ada gunakan sheet pertama.
           const sheetName =
             workbook.SheetNames.find(
               (name) => name.trim().toLowerCase() === "absensi",
             ) || workbook.SheetNames[0];
 
           const worksheet = workbook.Sheets[sheetName];
+
           const rows = XLSX.utils.sheet_to_json(worksheet, {
             defval: "",
             raw: false,
@@ -755,9 +780,11 @@
             String(value).trim().toLowerCase().replace(/\s+/g, " ");
 
           const headers = Object.keys(rows[0]);
+
           const nimHeader = headers.find(
             (header) => normalizeHeader(header) === "nim",
           );
+
           const nameHeader = headers.find((header) =>
             ["nama mahasiswa", "nama lengkap", "nama"].includes(
               normalizeHeader(header),
@@ -772,6 +799,7 @@
 
           const importedStudents = [];
           const seenNim = new Set();
+
           let invalidCount = 0;
           let duplicateInFileCount = 0;
 
@@ -779,11 +807,11 @@
             const nim = String(row[nimHeader] ?? "")
               .trim()
               .replace(/\.0$/, "");
+
             const name = String(row[nameHeader] ?? "")
               .trim()
               .replace(/\s+/g, " ");
 
-            // Abaikan baris yang benar-benar kosong.
             if (!nim && !name) return;
 
             if (!nim || !/^[a-zA-Z0-9_-]+$/.test(nim) || name.length < 3) {
@@ -804,8 +832,8 @@
             throw new Error("Tidak ada data mahasiswa valid untuk diimpor.");
           }
 
-          // Ambil daftar NIM yang sudah ada agar tidak menimpa data lama.
           const existingSnapshot = await getDocs(collection(db, "students"));
+
           const existingNim = new Set(
             existingSnapshot.docs.map((item) => item.id),
           );
@@ -824,19 +852,20 @@
                 `NIM duplikat di Excel: ${duplicateInFileCount}\n` +
                 `Baris tidak valid: ${invalidCount}`,
             );
+
             return;
           }
 
-          // Firestore membatasi maksimal 500 operasi per batch.
-          // Gunakan 400 agar tetap memiliki ruang aman.
           let successCount = 0;
 
           for (let index = 0; index < newStudents.length; index += 400) {
             const batch = writeBatch(db);
+
             const chunk = newStudents.slice(index, index + 400);
 
             chunk.forEach((student) => {
               const studentRef = doc(db, "students", student.nim);
+
               batch.set(studentRef, {
                 nim: student.nim,
                 name: student.name,
@@ -846,6 +875,7 @@
             });
 
             await batch.commit();
+
             successCount += chunk.length;
           }
 
@@ -871,10 +901,12 @@
           }
         } finally {
           uploadExcelButton.disabled = false;
+
           uploadExcelButton.innerHTML = `
             <i data-lucide="file-up" class="h-5 w-5"></i>
             Upload Excel
           `;
+
           lucide.createIcons();
         }
       });
@@ -886,11 +918,13 @@
       function getStudentCohort(student) {
         const nim = String(student.nim || student.id || "").trim();
         const match = nim.match(/^(\d{2})/);
+
         return match ? match[1] : "";
       }
 
       function updateCohortOptions() {
         const selected = cohortFilter.value || "all";
+
         const cohorts = [
           ...new Set(students.map(getStudentCohort).filter(Boolean)),
         ].sort((a, b) => Number(b) - Number(a));
@@ -930,6 +964,7 @@
             Angkatan diambil dari empat digit pertama NIM.
           `;
         }
+
         lucide.createIcons();
       }
 
@@ -940,8 +975,10 @@
         let filtered = students.filter((student) => {
           const nim = String(student.nim || student.id).toLowerCase();
           const name = String(student.name || "").toLowerCase();
+
           const matchesKeyword =
             nim.includes(keyword) || name.includes(keyword);
+
           const matchesCohort =
             selectedCohort === "all" ||
             getStudentCohort(student) === selectedCohort;
@@ -957,6 +994,7 @@
             const valueA = String(
               field === "nim" ? a.nim || a.id : a.name || "",
             );
+
             const valueB = String(
               field === "nim" ? b.nim || b.id : b.name || "",
             );
@@ -965,11 +1003,13 @@
               numeric: field === "nim",
               sensitivity: "base",
             });
+
             return result * direction;
           });
         }
 
         totalStudents.textContent = students.length;
+
         tableInfo.textContent = `Menampilkan ${filtered.length} dari ${students.length} mahasiswa`;
 
         updateDragInfo();
@@ -983,15 +1023,24 @@
                     <i data-lucide="users" class="h-7 w-7"></i>
                   </div>
                   <p class="font-medium text-slate-600">
-                    ${keyword || selectedCohort !== "all" ? "Mahasiswa tidak ditemukan" : "Belum ada data mahasiswa"}
+                    ${
+                      keyword || selectedCohort !== "all"
+                        ? "Mahasiswa tidak ditemukan"
+                        : "Belum ada data mahasiswa"
+                    }
                   </p>
                   <p class="mt-1 text-xs text-slate-400">
-                    ${keyword || selectedCohort !== "all" ? "Coba ubah kata kunci atau filter angkatan." : "Klik Tambah Mahasiswa untuk memasukkan data."}
+                    ${
+                      keyword || selectedCohort !== "all"
+                        ? "Coba ubah kata kunci atau filter angkatan."
+                        : "Klik Tambah Mahasiswa untuk memasukkan data."
+                    }
                   </p>
                 </div>
               </td>
             </tr>
           `;
+
           lucide.createIcons();
           return;
         }
@@ -1009,10 +1058,18 @@
                   <div class="flex items-center gap-2">
                     <button
                       type="button"
-                      class="drag-handle rounded-lg p-1 text-slate-400 hover:bg-blue-50 hover:text-blue-600 ${canDrag ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed opacity-40"}"
+                      class="drag-handle rounded-lg p-1 text-slate-400 hover:bg-blue-50 hover:text-blue-600 ${
+                        canDrag
+                          ? "cursor-grab active:cursor-grabbing"
+                          : "cursor-not-allowed opacity-40"
+                      }"
                       data-drag="${escapeHTML(student.id)}"
                       draggable="${canDrag ? "true" : "false"}"
-                      title="${canDrag ? "Tarik untuk mengubah urutan" : "Aktifkan urutan manual tanpa filter untuk drag & drop"}"
+                      title="${
+                        canDrag
+                          ? "Tarik untuk mengubah urutan"
+                          : "Aktifkan urutan manual tanpa filter untuk drag & drop"
+                      }"
                       ${canDrag ? "" : "disabled"}
                     >
                       <i data-lucide="grip-vertical" class="h-4 w-4"></i>
@@ -1037,15 +1094,19 @@
 
                 <td class="px-5 py-4">
                   <div class="flex items-center justify-center gap-2">
-                    <button data-edit="${escapeHTML(student.id)}"
+                    <button
+                      data-edit="${escapeHTML(student.id)}"
                       class="rounded-lg bg-blue-50 p-2 text-blue-600 transition hover:bg-blue-100"
-                      title="Edit">
+                      title="Edit"
+                    >
                       <i data-lucide="pencil" class="h-4 w-4"></i>
                     </button>
 
-                    <button data-delete="${escapeHTML(student.id)}"
+                    <button
+                      data-delete="${escapeHTML(student.id)}"
                       class="rounded-lg bg-red-50 p-2 text-red-600 transition hover:bg-red-100"
-                      title="Hapus">
+                      title="Hapus"
+                    >
                       <i data-lucide="trash-2" class="h-4 w-4"></i>
                     </button>
                   </div>
@@ -1058,6 +1119,10 @@
         lucide.createIcons();
       }
 
+      // =====================================
+      // SIMPAN URUTAN MAHASISWA
+      // =====================================
+
       async function saveStudentOrder() {
         if (isSavingOrder) return;
 
@@ -1065,13 +1130,13 @@
         renderStudents();
 
         try {
-          // Simpan urutan ke Firestore agar tetap tersimpan setelah halaman dimuat ulang.
           for (let index = 0; index < students.length; index += 400) {
             const batch = writeBatch(db);
             const chunk = students.slice(index, index + 400);
 
             chunk.forEach((student, chunkIndex) => {
               const position = index + chunkIndex;
+
               batch.update(doc(db, "students", student.id), {
                 sortOrder: position,
                 updatedAt: serverTimestamp(),
@@ -1085,10 +1150,13 @@
             ...student,
             sortOrder: index,
           }));
+
           showToast("Urutan mahasiswa berhasil disimpan.");
         } catch (error) {
           console.error("Save student order error:", error);
+
           showToast("Gagal menyimpan urutan mahasiswa.", "error");
+
           await loadStudents();
         } finally {
           isSavingOrder = false;
@@ -1101,31 +1169,42 @@
       sortDirection.addEventListener("change", renderStudents);
       cohortFilter.addEventListener("change", renderStudents);
 
+      // =====================================
+      // DRAG & DROP
+      // =====================================
+
       studentTable.addEventListener("dragstart", (event) => {
         const handle = event.target.closest("[data-drag]");
+
         if (!handle || !isManualView() || isSavingOrder) {
           event.preventDefault();
           return;
         }
 
         draggedStudentId = handle.dataset.drag;
+
         const row = handle.closest("tr");
+
         row.classList.add("opacity-40");
+
         event.dataTransfer.effectAllowed = "move";
         event.dataTransfer.setData("text/plain", draggedStudentId);
       });
 
       studentTable.addEventListener("dragover", (event) => {
         const targetRow = event.target.closest("[data-student-row]");
+
         if (!draggedStudentId || !targetRow || !isManualView()) return;
 
         event.preventDefault();
+
         event.dataTransfer.dropEffect = "move";
         targetRow.classList.add("bg-blue-50");
       });
 
       studentTable.addEventListener("dragleave", (event) => {
         const targetRow = event.target.closest("[data-student-row]");
+
         if (targetRow && !targetRow.contains(event.relatedTarget)) {
           targetRow.classList.remove("bg-blue-50");
         }
@@ -1133,27 +1212,35 @@
 
       studentTable.addEventListener("drop", async (event) => {
         const targetRow = event.target.closest("[data-student-row]");
+
         if (!draggedStudentId || !targetRow || !isManualView()) return;
 
         event.preventDefault();
+
         const targetStudentId = targetRow.dataset.studentRow;
+
         const fromIndex = students.findIndex(
           (student) => student.id === draggedStudentId,
         );
+
         const toIndex = students.findIndex(
           (student) => student.id === targetStudentId,
         );
 
         if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
           const [movedStudent] = students.splice(fromIndex, 1);
+
           students.splice(toIndex, 0, movedStudent);
+
           draggedStudentId = null;
+
           await saveStudentOrder();
         }
       });
 
       studentTable.addEventListener("dragend", () => {
         draggedStudentId = null;
+
         studentTable.querySelectorAll("tr").forEach((row) => {
           row.classList.remove("opacity-40", "bg-blue-50");
         });
@@ -1173,12 +1260,14 @@
         studentModal.classList.remove("flex");
 
         studentForm.reset();
+
         editingNim = null;
 
         modalTitle.textContent = "Tambah Mahasiswa";
         saveButton.textContent = "Simpan Mahasiswa";
 
         nimInput.disabled = false;
+
         formError.classList.add("hidden");
         formError.textContent = "";
       }
@@ -1192,6 +1281,7 @@
       document
         .getElementById("closeModal")
         .addEventListener("click", closeModal);
+
       document
         .getElementById("cancelButton")
         .addEventListener("click", closeModal);
@@ -1213,7 +1303,6 @@
         nimInput.value = student.nim || student.id;
         nameInput.value = student.name || "";
 
-        // NIM menjadi ID dokumen dan tidak diubah saat edit
         nimInput.disabled = true;
 
         openModal();
@@ -1248,6 +1337,7 @@
 
         saveButton.disabled = true;
         saveButton.textContent = "Menyimpan...";
+
         formError.classList.add("hidden");
 
         try {
@@ -1265,8 +1355,10 @@
 
             if (existingStudent.exists()) {
               showFormError("NIM tersebut sudah terdaftar.");
+
               saveButton.disabled = false;
               saveButton.textContent = "Simpan Mahasiswa";
+
               return;
             }
 
@@ -1281,6 +1373,7 @@
           }
 
           closeModal();
+
           await loadStudents();
         } catch (error) {
           console.error("Save student error:", error);
@@ -1292,6 +1385,7 @@
           }
         } finally {
           saveButton.disabled = false;
+
           saveButton.textContent = editingNim
             ? "Simpan Perubahan"
             : "Simpan Mahasiswa";
@@ -1322,9 +1416,11 @@
           await deleteDoc(doc(db, "students", nim));
 
           showToast("Data mahasiswa berhasil dihapus.");
+
           await loadStudents();
         } catch (error) {
           console.error("Delete student error:", error);
+
           showToast("Gagal menghapus data mahasiswa.", "error");
         }
       }
@@ -1362,10 +1458,12 @@
 
           try {
             const adminRef = doc(db, "admins", user.uid);
+
             const adminSnapshot = await getDoc(adminRef);
 
             if (!adminSnapshot.exists()) {
               await signOut(auth);
+
               window.location.replace("../login.html");
               return;
             }
@@ -1374,6 +1472,7 @@
 
             if (adminData.role !== "admin" || adminData.status !== "active") {
               await signOut(auth);
+
               window.location.replace("../login.html");
               return;
             }
@@ -1384,8 +1483,11 @@
             await loadStudents();
           } catch (error) {
             console.error("Authentication check error:", error);
+
             alert("Gagal memeriksa akses administrator.");
+
             await signOut(auth);
+
             window.location.replace("../login.html");
           }
         });
@@ -1402,9 +1504,11 @@
 
           try {
             await signOut(auth);
+
             window.location.replace("../login.html");
           } catch (error) {
             console.error("Logout error:", error);
+
             showToast("Gagal keluar dari akun.", "error");
           }
         });
