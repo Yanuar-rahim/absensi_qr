@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Mata Kuliah - Absensi QR</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: #f8fafc;
+      }
+
+      .sidebar {
+        transition: transform 0.3s ease;
+      }
+
+      .nav-link {
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+
+      .nav-active,
+      .nav-active:hover {
+        background: #2563eb;
+        color: white;
+      }
+
+      @media (max-width: 767px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen">
+    <!-- Overlay -->
+    <div
+      id="overlay"
+      class="fixed inset-0 z-40 hidden bg-slate-900/50 md:hidden"
+    ></div>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white"
+    >
+      <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white"
+        >
+          <i data-lucide="qr-code" class="h-6 w-6"></i>
+        </div>
+
+        <div>
+          <h1 class="text-lg font-bold text-slate-800">Absensi QR</h1>
+          <p class="text-xs text-slate-400">Administrator Panel</p>
+        </div>
+
+        <button id="closeSidebar" class="ml-auto text-slate-400 md:hidden">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Menu Utama
+        </p>
+
+        <nav class="space-y-2">
+          <a
+            href="../dashboard.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+            Dashboard
+          </a>
+
+          <a
+            href="mahasiswa.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="users" class="h-5 w-5"></i>
+            Data Mahasiswa
+          </a>
+
+          <a
+            href="mata-kuliah.html"
+            class="nav-link nav-active flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium"
+          >
+            <i data-lucide="book-open" class="h-5 w-5"></i>
+            Mata Kuliah
+          </a>
+
+          <a
+            href="kelas.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="users-round" class="h-5 w-5"></i>
+            Pengelompokan Kelas
+          </a>
+
+          <a
+            href="sesi-absensi.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="qr-code" class="h-5 w-5"></i>
+            Sesi Absensi
+          </a>
+
+          <a
+            href="laporan.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="file-chart-column" class="h-5 w-5"></i>
+            Laporan Absensi
+          </a>
+        </nav>
+
+        <div class="my-6 border-t border-slate-100"></div>
+
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Akun
+        </p>
+
+        <button
+          id="logoutButton"
+          class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500"
+        >
+          <i data-lucide="log-out" class="h-5 w-5"></i>
+          Keluar
+        </button>
+      </div>
+
+      <div class="border-t border-slate-100 p-4">
+        <div class="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
+          >
+            <i data-lucide="shield-check" class="h-5 w-5"></i>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold text-slate-700">Administrator</p>
+            <p class="text-xs text-slate-400">Panel Pengelola</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="min-h-screen md:ml-64">
+      <!-- Topbar -->
+      <header
+        class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            id="openSidebar"
+            class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+          >
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 sm:text-xl">
+              Mata Kuliah
+            </h2>
+
+            <p class="hidden text-xs text-slate-400 sm:block">
+              Kelola daftar mata kuliah
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden text-right sm:block">
+            <p id="adminName" class="text-sm font-semibold text-slate-700">
+              Memuat...
+            </p>
+            <p class="text-xs text-slate-400">Administrator</p>
+          </div>
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
+          >
+            <i data-lucide="user-round" class="h-5 w-5"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="p-4 sm:p-6 lg:p-8">
+        <div
+          class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+        >
+          <div>
+            <h1 class="text-xl font-bold text-slate-800 sm:text-2xl">
+              Daftar Mata Kuliah
+            </h1>
+
+            <p class="mt-1 text-sm text-slate-400">
+              Tambahkan dan kelola mata kuliah untuk kegiatan absensi.
+            </p>
+          </div>
+
+          <button
+            id="addButton"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+          >
+            <i data-lucide="plus" class="h-5 w-5"></i>
+            Tambah Mata Kuliah
+          </button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+              >
+                <i data-lucide="book-open" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Total Mata Kuliah</p>
+                <h3 id="totalCourses" class="text-2xl font-bold text-slate-800">
+                  0
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
+              >
+                <i data-lucide="check-circle" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Status Pengelolaan</p>
+                <h3 class="text-lg font-bold text-emerald-600">Aktif</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div
+          class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
+        >
+          <div
+            class="flex flex-col gap-4 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <h3 class="font-bold text-slate-800">Data Mata Kuliah</h3>
+              <p class="mt-1 text-xs text-slate-400">
+                Daftar mata kuliah yang terdaftar dalam sistem
+              </p>
+            </div>
+
+            <div class="relative w-full sm:max-w-xs">
+              <i
+                data-lucide="search"
+                class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              ></i>
+
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Cari kode atau nama..."
+                class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[750px] text-left">
+              <thead class="bg-slate-50">
+                <tr
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  <th class="px-5 py-4">No.</th>
+                  <th class="px-5 py-4">Kode MK</th>
+                  <th class="px-5 py-4">Nama Mata Kuliah</th>
+                  <th class="px-5 py-4">SKS</th>
+                  <th class="px-5 py-4">Semester</th>
+                  <th class="px-5 py-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody id="courseTable">
+                <tr>
+                  <td
+                    colspan="6"
+                    class="px-5 py-12 text-center text-sm text-slate-400"
+                  >
+                    Memuat data mata kuliah...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="border-t border-slate-100 px-5 py-4">
+            <p id="tableInfo" class="text-xs text-slate-400">
+              Menampilkan 0 mata kuliah
+            </p>
+          </div>
+        </div>
+
+        <footer
+          class="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400"
+        >
+          &copy; 2026 Laboratorium Teknik Informatika.
+        </footer>
+      </section>
+    </main>
+
+    <!-- Modal -->
+    <div
+      id="courseModal"
+      class="fixed inset-0 z-[60] hidden items-center justify-center overflow-y-auto bg-slate-900/50 p-4"
+    >
+      <div class="my-auto w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+        <div
+          class="flex items-center justify-between border-b border-slate-100 p-5"
+        >
+          <div>
+            <h3 id="modalTitle" class="text-lg font-bold text-slate-800">
+              Tambah Mata Kuliah
+            </h3>
+
+            <p class="mt-1 text-xs text-slate-400">
+              Lengkapi informasi mata kuliah.
+            </p>
+          </div>
+
+          <button
+            id="closeModal"
+            class="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+          >
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+
+        <form id="courseForm" class="space-y-4 p-5">
+          <div>
+            <label
+              for="codeInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Kode Mata Kuliah
+            </label>
+
+            <input
+              id="codeInput"
+              type="text"
+              required
+              maxlength="30"
+              placeholder="Contoh: IF101"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          <div>
+            <label
+              for="nameInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Nama Mata Kuliah
+            </label>
+
+            <input
+              id="nameInput"
+              type="text"
+              required
+              maxlength="100"
+              placeholder="Contoh: Pemrograman Web"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                for="sksInput"
+                class="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Jumlah SKS
+              </label>
+
+              <select
+                id="sksInput"
+                required
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
+              >
+                <option value="">Pilih SKS</option>
+                <option value="1">1 SKS</option>
+                <option value="2">2 SKS</option>
+                <option value="3">3 SKS</option>
+                <option value="4">4 SKS</option>
+                <option value="5">5 SKS</option>
+                <option value="6">6 SKS</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="semesterInput"
+                class="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Semester
+              </label>
+
+              <select
+                id="semesterInput"
+                required
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
+              >
+                <option value="">Pilih Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+          </div>
+
+          <div
+            id="formError"
+            class="hidden rounded-xl bg-red-50 p-3 text-sm text-red-600"
+          ></div>
+
+          <div
+            class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end"
+          >
+            <button
+              type="button"
+              id="cancelButton"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              Batal
+            </button>
+
+            <button
+              type="submit"
+              id="saveButton"
+              class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+            >
+              Simpan Mata Kuliah
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-5 right-5 z-[80] hidden max-w-sm rounded-xl px-5 py-4 text-sm font-medium text-white shadow-xl"
+    ></div>
+
+    <!-- Firebase -->
+    <script type="module">
+      import { auth, db, authPersistence } from "../js/firebase.js";
+
+      import {
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+      import {
+        collection,
+        doc,
+        getDoc,
+        getDocs,
+        setDoc,
+        updateDoc,
+        deleteDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+      // ELEMENT
+      const courseTable = document.getElementById("courseTable");
+      const totalCourses = document.getElementById("totalCourses");
+      const tableInfo = document.getElementById("tableInfo");
+
+      const courseModal = document.getElementById("courseModal");
+      const courseForm = document.getElementById("courseForm");
+
+      const codeInput = document.getElementById("codeInput");
+      const nameInput = document.getElementById("nameInput");
+      const sksInput = document.getElementById("sksInput");
+      const semesterInput = document.getElementById("semesterInput");
+
+      const modalTitle = document.getElementById("modalTitle");
+      const saveButton = document.getElementById("saveButton");
+      const formError = document.getElementById("formError");
+      const searchInput = document.getElementById("searchInput");
+      const toast = document.getElementById("toast");
+
+      let courses = [];
+      let editingCode = null;
+      let toastTimer;
+
+      // SIDEBAR
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      document.getElementById("openSidebar").addEventListener("click", () => {
+        sidebar.classList.add("show");
+        overlay.classList.remove("hidden");
+      });
+
+      function closeSidebar() {
+        sidebar.classList.remove("show");
+        overlay.classList.add("hidden");
+      }
+
+      document
+        .getElementById("closeSidebar")
+        .addEventListener("click", closeSidebar);
+
+      overlay.addEventListener("click", closeSidebar);
+
+      // TOAST
+      function showToast(message, type = "success") {
+        clearTimeout(toastTimer);
+
+        toast.textContent = message;
+
+        toast.className =
+          "fixed bottom-5 right-5 z-[80] max-w-sm rounded-xl px-5 py-4 text-sm font-medium text-white shadow-xl " +
+          (type === "success" ? "bg-emerald-600" : "bg-red-600");
+
+        toastTimer = setTimeout(() => toast.classList.add("hidden"), 3000);
+      }
+
+      function escapeHTML(value = "") {
+        return String(value).replace(
+          /[&<>"']/g,
+          (character) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            })[character],
+        );
+      }
+
+      // LOAD DATA
+      async function loadCourses() {
+        courseTable.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-5 py-12 text-center text-sm text-slate-400">
+              Memuat data mata kuliah...
+            </td>
+          </tr>
+        `;
+
+        try {
+          const snapshot = await getDocs(collection(db, "courses"));
+
+          courses = snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data(),
+          }));
+
+          courses.sort((a, b) =>
+            (a.name || "").localeCompare(b.name || "", "id"),
+          );
+
+          renderCourses();
+        } catch (error) {
+          console.error("Load courses error:", error);
+
+          courseTable.innerHTML = `
+            <tr>
+              <td colspan="6" class="px-5 py-12 text-center text-sm text-red-500">
+                Gagal mengambil data. Periksa Firestore Rules dan koneksi Firebase.
+              </td>
+            </tr>
+          `;
+
+          showToast("Gagal memuat mata kuliah.", "error");
+        }
+      }
+
+      // RENDER
+      function renderCourses() {
+        const keyword = searchInput.value.trim().toLowerCase();
+
+        const filtered = courses.filter((course) => {
+          return (
+            String(course.code || course.id)
+              .toLowerCase()
+              .includes(keyword) ||
+            String(course.name || "")
+              .toLowerCase()
+              .includes(keyword)
+          );
+        });
+
+        totalCourses.textContent = courses.length;
+
+        tableInfo.textContent = `Menampilkan ${filtered.length} dari ${courses.length} mata kuliah`;
+
+        if (filtered.length === 0) {
+          courseTable.innerHTML = `
+            <tr>
+              <td colspan="6" class="px-5 py-12 text-center text-sm text-slate-400">
+                ${
+                  keyword
+                    ? "Mata kuliah tidak ditemukan."
+                    : "Belum ada mata kuliah. Silakan tambahkan data."
+                }
+              </td>
+            </tr>
+          `;
+
+          lucide.createIcons();
+          return;
+        }
+
+        courseTable.innerHTML = filtered
+          .map(
+            (course, index) => `
+              <tr class="border-t border-slate-100 transition hover:bg-slate-50">
+                <td class="px-5 py-4 text-sm text-slate-500">
+                  ${index + 1}
+                </td>
+
+                <td class="px-5 py-4">
+                  <span class="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                    ${escapeHTML(course.code || course.id)}
+                  </span>
+                </td>
+
+                <td class="px-5 py-4 text-sm font-medium text-slate-700">
+                  ${escapeHTML(course.name || "-")}
+                </td>
+
+                <td class="px-5 py-4 text-sm text-slate-600">
+                  ${escapeHTML(course.sks ?? "-")}
+                </td>
+
+                <td class="px-5 py-4 text-sm text-slate-600">
+                  ${
+                    course.semester
+                      ? "Semester " + escapeHTML(course.semester)
+                      : "-"
+                  }
+                </td>
+
+                <td class="px-5 py-4">
+                  <div class="flex items-center justify-center gap-2">
+                    <button
+                      data-edit="${escapeHTML(course.id)}"
+                      class="rounded-lg bg-blue-50 p-2 text-blue-600 hover:bg-blue-100"
+                      title="Edit"
+                    >
+                      <i data-lucide="pencil" class="h-4 w-4"></i>
+                    </button>
+
+                    <button
+                      data-delete="${escapeHTML(course.id)}"
+                      class="rounded-lg bg-red-50 p-2 text-red-600 hover:bg-red-100"
+                      title="Hapus"
+                    >
+                      <i data-lucide="trash-2" class="h-4 w-4"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `,
+          )
+          .join("");
+
+        lucide.createIcons();
+      }
+
+      searchInput.addEventListener("input", renderCourses);
+
+      // MODAL
+      function openModal() {
+        courseModal.classList.remove("hidden");
+        courseModal.classList.add("flex");
+      }
+
+      function closeModal() {
+        courseModal.classList.add("hidden");
+        courseModal.classList.remove("flex");
+
+        courseForm.reset();
+        editingCode = null;
+
+        modalTitle.textContent = "Tambah Mata Kuliah";
+        saveButton.textContent = "Simpan Mata Kuliah";
+        codeInput.disabled = false;
+
+        formError.classList.add("hidden");
+        formError.textContent = "";
+      }
+
+      document.getElementById("addButton").addEventListener("click", () => {
+        closeModal();
+        openModal();
+        codeInput.focus();
+      });
+
+      document
+        .getElementById("closeModal")
+        .addEventListener("click", closeModal);
+
+      document
+        .getElementById("cancelButton")
+        .addEventListener("click", closeModal);
+
+      function showFormError(message) {
+        formError.textContent = message;
+        formError.classList.remove("hidden");
+      }
+
+      // EDIT
+      function editCourse(code) {
+        const course = courses.find((item) => item.id === code);
+
+        if (!course) return;
+
+        editingCode = code;
+
+        modalTitle.textContent = "Edit Mata Kuliah";
+        saveButton.textContent = "Simpan Perubahan";
+
+        codeInput.value = course.code || course.id;
+        nameInput.value = course.name || "";
+        sksInput.value = String(course.sks || "");
+        semesterInput.value = String(course.semester || "");
+
+        codeInput.disabled = true;
+
+        openModal();
+      }
+
+      // SAVE
+      courseForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const code = codeInput.value.trim().toUpperCase();
+        const name = nameInput.value.trim();
+        const sks = Number(sksInput.value);
+        const semester = Number(semesterInput.value);
+
+        if (!code || !name || !sks || !semester) {
+          showFormError("Lengkapi kode, nama, SKS, dan semester.");
+          return;
+        }
+
+        if (!/^[A-Z0-9_-]+$/.test(code)) {
+          showFormError(
+            "Kode mata kuliah hanya boleh berisi huruf, angka, _ atau -.",
+          );
+          return;
+        }
+
+        if (name.length < 3) {
+          showFormError("Nama mata kuliah minimal 3 karakter.");
+          return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Menyimpan...";
+        formError.classList.add("hidden");
+
+        try {
+          const courseRef = doc(db, "courses", code);
+
+          const courseData = {
+            code,
+            name,
+            sks,
+            semester,
+            updatedAt: serverTimestamp(),
+          };
+
+          if (editingCode) {
+            await updateDoc(courseRef, courseData);
+
+            showToast("Mata kuliah berhasil diperbarui.");
+          } else {
+            const existing = await getDoc(courseRef);
+
+            if (existing.exists()) {
+              showFormError("Kode mata kuliah sudah terdaftar.");
+              return;
+            }
+
+            await setDoc(courseRef, {
+              ...courseData,
+              createdAt: serverTimestamp(),
+            });
+
+            showToast("Mata kuliah berhasil ditambahkan.");
+          }
+
+          closeModal();
+          await loadCourses();
+        } catch (error) {
+          console.error("Save course error:", error);
+
+          if (error.code === "permission-denied") {
+            showFormError("Akses ditolak. Periksa Firestore Rules.");
+          } else {
+            showFormError("Gagal menyimpan mata kuliah.");
+          }
+        } finally {
+          saveButton.disabled = false;
+
+          if (!courseModal.classList.contains("hidden")) {
+            saveButton.textContent = editingCode
+              ? "Simpan Perubahan"
+              : "Simpan Mata Kuliah";
+          }
+        }
+      });
+
+      // DELETE
+      async function deleteCourse(code) {
+        const course = courses.find((item) => item.id === code);
+
+        if (!course) return;
+
+        if (!confirm(`Hapus mata kuliah "${course.name}"?`)) return;
+
+        try {
+          await deleteDoc(doc(db, "courses", code));
+
+          showToast("Mata kuliah berhasil dihapus.");
+
+          await loadCourses();
+        } catch (error) {
+          console.error("Delete course error:", error);
+
+          showToast("Gagal menghapus mata kuliah.", "error");
+        }
+      }
+
+      courseTable.addEventListener("click", (event) => {
+        const editButton = event.target.closest("[data-edit]");
+        const deleteButton = event.target.closest("[data-delete]");
+
+        if (editButton) {
+          editCourse(editButton.dataset.edit);
+        }
+
+        if (deleteButton) {
+          deleteCourse(deleteButton.dataset.delete);
+        }
+      });
+
+      // AUTHENTICATION
+      async function initializePage() {
+        try {
+          await authPersistence;
+        } catch (error) {
+          console.error("Persistence error:", error);
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.replace("../login.html");
+            return;
+          }
+
+          try {
+            const adminSnapshot = await getDoc(doc(db, "admins", user.uid));
+
+            if (!adminSnapshot.exists()) {
+              await signOut(auth);
+              window.location.replace("../login.html");
+              return;
+            }
+
+            const adminData = adminSnapshot.data();
+
+            if (adminData.role !== "admin" || adminData.status !== "active") {
+              await signOut(auth);
+              window.location.replace("../login.html");
+              return;
+            }
+
+            document.getElementById("adminName").textContent =
+              adminData.name || "Administrator";
+
+            await loadCourses();
+          } catch (error) {
+            console.error("Authentication check error:", error);
+
+            alert("Gagal memeriksa akses administrator.");
+
+            await signOut(auth);
+            window.location.replace("../login.html");
+          }
+        });
+      }
+
+      // LOGOUT
+      document
+        .getElementById("logoutButton")
+        .addEventListener("click", async () => {
+          if (!confirm("Apakah kamu yakin ingin keluar?")) return;
+
+          try {
+            await signOut(auth);
+            window.location.replace("../login.html");
+          } catch (error) {
+            console.error("Logout error:", error);
+
+            showToast("Gagal keluar dari akun.", "error");
+          }
+        });
+
+      initializePage();
+    </script>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

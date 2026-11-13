@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Dashboard Administrator - Absensi QR</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: #f8fafc;
+      }
+
+      .sidebar {
+        transition: transform 0.3s ease;
+      }
+
+      .nav-link {
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+
+      .nav-active {
+        background: #2563eb;
+        color: white;
+      }
+
+      .nav-active:hover {
+        background: #1d4ed8;
+        color: white;
+      }
+
+      @media (max-width: 767px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.show {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen">
+    <!-- Mobile Overlay -->
+    <div
+      id="overlay"
+      class="fixed inset-0 z-40 hidden bg-slate-900/50 md:hidden"
+    ></div>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white"
+    >
+      <!-- Logo -->
+      <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white"
+        >
+          <i data-lucide="qr-code" class="h-6 w-6"></i>
+        </div>
+
+        <div>
+          <h1 class="text-lg font-bold text-slate-800">Absensi QR</h1>
+          <p class="text-xs text-slate-400">Administrator Panel</p>
+        </div>
+
+        <button id="closeSidebar" class="ml-auto text-slate-400 md:hidden">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Menu Utama
+        </p>
+
+        <nav class="space-y-2">
+          <a
+            href="dashboard.html"
+            class="nav-link nav-active flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium"
+          >
+            <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+            Dashboard
+          </a>
+
+          <a
+            href="admin/mahasiswa.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="users" class="h-5 w-5"></i>
+            Data Mahasiswa
+          </a>
+
+          <a
+            href="admin/mata-kuliah.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="book-open" class="h-5 w-5"></i>
+            Mata Kuliah
+          </a>
+
+          <a
+            href="admin/kelas.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="users-round" class="h-5 w-5"></i>
+            Pengelompokan Kelas
+          </a>
+
+          <a
+            href="admin/sesi-absensi.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="qr-code" class="h-5 w-5"></i>
+            Sesi Absensi
+          </a>
+
+          <a
+            href="admin/laporan.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="file-chart-column" class="h-5 w-5"></i>
+            Laporan Absensi
+          </a>
+        </nav>
+
+        <div class="my-6 border-t border-slate-100"></div>
+
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Akun
+        </p>
+
+        <button
+          id="logoutButton"
+          class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500"
+        >
+          <i data-lucide="log-out" class="h-5 w-5"></i>
+          Keluar
+        </button>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="border-t border-slate-100 p-4">
+        <div class="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
+          >
+            <i data-lucide="shield-check" class="h-5 w-5"></i>
+          </div>
+
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-700">Administrator</p>
+            <p class="text-xs text-slate-400">Panel Pengelola</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="min-h-screen md:ml-64">
+      <!-- Topbar -->
+      <header
+        class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            id="openSidebar"
+            class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+          >
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 sm:text-xl">
+              Dashboard
+            </h2>
+            <p class="hidden text-xs text-slate-400 sm:block">
+              Ringkasan sistem absensi mahasiswa
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden text-right sm:block">
+            <p id="adminNameTop" class="text-sm font-semibold text-slate-700">
+              Memuat...
+            </p>
+            <p class="text-xs text-slate-400">Administrator</p>
+          </div>
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-600"
+          >
+            <i data-lucide="user-round" class="h-5 w-5"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Body -->
+      <section class="p-4 sm:p-6 lg:p-8">
+        <!-- Welcome -->
+        <div
+          class="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 p-6 text-white shadow-lg shadow-blue-200 sm:p-8"
+        >
+          <div class="relative z-10 max-w-2xl">
+            <p class="mb-2 text-sm font-medium text-blue-100">
+              Selamat datang kembali,
+            </p>
+
+            <h1 id="welcomeName" class="mb-3 text-2xl font-bold sm:text-3xl">
+              Administrator
+            </h1>
+
+            <p class="text-sm leading-relaxed text-blue-100">
+              Kelola data mahasiswa, mata kuliah, sesi absensi, dan pantau
+              aktivitas kehadiran melalui dashboard ini.
+            </p>
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mb-8">
+          <div class="mb-5">
+            <h3 class="text-lg font-bold text-slate-800">Ringkasan Data</h3>
+            <p class="text-sm text-slate-400">Informasi umum sistem absensi</p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <!-- Mahasiswa -->
+            <div
+              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+            >
+              <div class="mb-4 flex items-center justify-between">
+                <div
+                  class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+                >
+                  <i data-lucide="users" class="h-6 w-6"></i>
+                </div>
+                <span class="text-xs font-medium text-slate-400">
+                  Mahasiswa
+                </span>
+              </div>
+
+              <h4 id="totalStudents" class="text-2xl font-bold text-slate-800">
+                --
+              </h4>
+              <p class="mt-1 text-xs text-slate-400">
+                Total mahasiswa terdaftar
+              </p>
+            </div>
+
+            <!-- Mata Kuliah -->
+            <div
+              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+            >
+              <div class="mb-4 flex items-center justify-between">
+                <div
+                  class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"
+                >
+                  <i data-lucide="book-open" class="h-6 w-6"></i>
+                </div>
+                <span class="text-xs font-medium text-slate-400">
+                  Akademik
+                </span>
+              </div>
+
+              <h4 id="totalCourses" class="text-2xl font-bold text-slate-800">
+                --
+              </h4>
+              <p class="mt-1 text-xs text-slate-400">Total mata kuliah</p>
+            </div>
+
+            <!-- Sesi Absensi -->
+            <div
+              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+            >
+              <div class="mb-4 flex items-center justify-between">
+                <div
+                  class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600"
+                >
+                  <i data-lucide="calendar-check" class="h-6 w-6"></i>
+                </div>
+                <span class="text-xs font-medium text-slate-400">
+                  Aktivitas
+                </span>
+              </div>
+
+              <h4 id="totalSessions" class="text-2xl font-bold text-slate-800">
+                --
+              </h4>
+              <p class="mt-1 text-xs text-slate-400">Total sesi absensi</p>
+            </div>
+
+            <!-- Kehadiran -->
+            <div
+              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+            >
+              <div class="mb-4 flex items-center justify-between">
+                <div
+                  class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
+                >
+                  <i data-lucide="clipboard-check" class="h-6 w-6"></i>
+                </div>
+                <span class="text-xs font-medium text-slate-400">
+                  Kehadiran
+                </span>
+              </div>
+
+              <h4
+                id="totalAttendanceToday"
+                class="text-2xl font-bold text-slate-800"
+              >
+                --
+              </h4>
+              <p class="mt-1 text-xs text-slate-400">
+                Kehadiran tercatat hari ini
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Access -->
+        <div class="mb-8">
+          <div class="mb-5">
+            <h3 class="text-lg font-bold text-slate-800">Akses Cepat</h3>
+            <p class="text-sm text-slate-400">
+              Pilih menu untuk mulai mengelola sistem
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <a
+              href="admin/mahasiswa.html"
+              class="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition group-hover:bg-blue-600 group-hover:text-white"
+              >
+                <i data-lucide="users" class="h-6 w-6"></i>
+              </div>
+
+              <h4 class="font-semibold text-slate-800">Data Mahasiswa</h4>
+
+              <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                Kelola data mahasiswa dan NIM.
+              </p>
+
+              <div
+                class="mt-4 flex items-center gap-2 text-xs font-semibold text-blue-600"
+              >
+                Buka menu
+                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+              </div>
+            </a>
+
+            <a
+              href="admin/mata-kuliah.html"
+              class="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md"
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white"
+              >
+                <i data-lucide="book-open" class="h-6 w-6"></i>
+              </div>
+
+              <h4 class="font-semibold text-slate-800">Mata Kuliah</h4>
+
+              <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                Kelola daftar mata kuliah.
+              </p>
+
+              <div
+                class="mt-4 flex items-center gap-2 text-xs font-semibold text-indigo-600"
+              >
+                Buka menu
+                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+              </div>
+            </a>
+
+            <a
+              href="admin/sesi-absensi.html"
+              class="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-200 hover:shadow-md"
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600 transition group-hover:bg-violet-600 group-hover:text-white"
+              >
+                <i data-lucide="qr-code" class="h-6 w-6"></i>
+              </div>
+
+              <h4 class="font-semibold text-slate-800">Sesi Absensi</h4>
+
+              <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                Buat sesi dan QR Code absensi.
+              </p>
+
+              <div
+                class="mt-4 flex items-center gap-2 text-xs font-semibold text-violet-600"
+              >
+                Buka menu
+                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+              </div>
+            </a>
+
+            <a
+              href="admin/laporan.html"
+              class="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-emerald-200 hover:shadow-md"
+            >
+              <div
+                class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-600 group-hover:text-white"
+              >
+                <i data-lucide="file-chart-column" class="h-6 w-6"></i>
+              </div>
+
+              <h4 class="font-semibold text-slate-800">Laporan Absensi</h4>
+
+              <p class="mt-2 text-xs leading-relaxed text-slate-400">
+                Lihat dan rekap data kehadiran.
+              </p>
+
+              <div
+                class="mt-4 flex items-center gap-2 text-xs font-semibold text-emerald-600"
+              >
+                Buka menu
+                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Information -->
+        <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
+          <div class="flex items-start gap-3">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600"
+            >
+              <i data-lucide="info" class="h-5 w-5"></i>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-slate-800">Informasi Sistem</h4>
+
+              <p class="mt-1 text-sm leading-relaxed text-slate-600">
+                Dashboard administrator telah terhubung dengan Firebase
+                Authentication. Statistik akan menampilkan data sebenarnya
+                setelah koleksi dan aturan akses Firestore untuk setiap fitur
+                selesai dikonfigurasi.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer
+          class="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400"
+        >
+          &copy; 2026 Laboratorium Teknik Informatika.
+        </footer>
+      </section>
+    </main>
+
+    <!-- Firebase Authentication & Firestore -->
+    <script type="module">
+      import { auth, db, authPersistence } from "./js/firebase.js";
+
+      import {
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+      import {
+        doc,
+        getDoc,
+        collection,
+        getCountFromServer,
+        query,
+        where,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+      // =====================================
+      // ELEMENT
+      // =====================================
+
+      const welcomeName = document.getElementById("welcomeName");
+      const adminNameTop = document.getElementById("adminNameTop");
+      const logoutButton = document.getElementById("logoutButton");
+
+      const totalStudents = document.getElementById("totalStudents");
+      const totalCourses = document.getElementById("totalCourses");
+      const totalSessions = document.getElementById("totalSessions");
+      const totalAttendanceToday = document.getElementById(
+        "totalAttendanceToday",
+      );
+
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const openSidebar = document.getElementById("openSidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+
+      // =====================================
+      // FORMAT ANGKA
+      // =====================================
+
+      function formatNumber(number) {
+        return Number(number).toLocaleString("id-ID");
+      }
+
+      // =====================================
+      // TANGGAL HARI INI
+      // Menggunakan tanggal lokal browser
+      // Format: YYYY-MM-DD
+      // =====================================
+
+      function getTodayDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
+
+      // =====================================
+      // MEMUAT STATISTIK FIRESTORE
+      // =====================================
+
+      async function loadDashboardStatistics() {
+        const statisticElements = [
+          totalStudents,
+          totalCourses,
+          totalSessions,
+          totalAttendanceToday,
+        ];
+
+        statisticElements.forEach((element) => {
+          element.textContent = "Memuat...";
+        });
+
+        const today = getTodayDate();
+
+        const statistics = [
+          {
+            element: totalStudents,
+            name: "Total mahasiswa",
+            request: getCountFromServer(collection(db, "students")),
+          },
+          {
+            element: totalCourses,
+            name: "Total mata kuliah",
+            request: getCountFromServer(collection(db, "courses")),
+          },
+          {
+            element: totalSessions,
+            name: "Total sesi absensi",
+            request: getCountFromServer(collection(db, "sessions")),
+          },
+          {
+            element: totalAttendanceToday,
+            name: "Kehadiran hari ini",
+            request: getCountFromServer(
+              query(collection(db, "attendance"), where("date", "==", today)),
+            ),
+          },
+        ];
+
+        // Memuat seluruh statistik secara bersamaan.
+        // Jika satu statistik gagal, statistik lainnya tetap ditampilkan.
+        const results = await Promise.allSettled(
+          statistics.map((item) => item.request),
+        );
+
+        results.forEach((result, index) => {
+          const item = statistics[index];
+
+          if (result.status === "fulfilled") {
+            const count = result.value.data().count;
+
+            item.element.textContent = formatNumber(count);
+
+            console.log(`${item.name}:`, count);
+          } else {
+            item.element.textContent = "--";
+
+            console.error(`Gagal memuat ${item.name}:`, result.reason);
+          }
+        });
+      }
+
+      // =====================================
+      // SIDEBAR MOBILE
+      // =====================================
+
+      function showSidebar() {
+        sidebar.classList.add("show");
+        overlay.classList.remove("hidden");
+      }
+
+      function hideSidebar() {
+        sidebar.classList.remove("show");
+        overlay.classList.add("hidden");
+      }
+
+      openSidebar.addEventListener("click", showSidebar);
+      closeSidebar.addEventListener("click", hideSidebar);
+      overlay.addEventListener("click", hideSidebar);
+
+      // =====================================
+      // AUTHENTICATION CHECK
+      // =====================================
+
+      async function initializeDashboard() {
+        try {
+          await authPersistence;
+        } catch (error) {
+          console.error("Persistence error:", error);
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+          if (!user) {
+            window.location.replace("login.html");
+            return;
+          }
+
+          try {
+            // Mengambil data administrator
+            const adminRef = doc(db, "admins", user.uid);
+            const adminSnapshot = await getDoc(adminRef);
+
+            if (!adminSnapshot.exists()) {
+              await signOut(auth);
+
+              alert("Akun administrator tidak terdaftar.");
+
+              window.location.replace("login.html");
+              return;
+            }
+
+            const adminData = adminSnapshot.data();
+
+            // Validasi role dan status administrator
+            if (adminData.role !== "admin" || adminData.status !== "active") {
+              await signOut(auth);
+
+              alert("Akses administrator tidak diizinkan.");
+
+              window.location.replace("login.html");
+              return;
+            }
+
+            // Menampilkan nama administrator
+            const displayName = adminData.name || "Administrator";
+
+            welcomeName.textContent = displayName;
+            adminNameTop.textContent = displayName;
+
+            // Memuat statistik setelah administrator terverifikasi
+            await loadDashboardStatistics();
+          } catch (error) {
+            console.error("Dashboard error:", error);
+
+            if (error.code === "permission-denied") {
+              alert(
+                "Tidak dapat membaca data administrator. Periksa Firestore Rules.",
+              );
+            } else {
+              alert("Terjadi kesalahan saat memuat dashboard.");
+            }
+
+            // Jangan logout otomatis jika hanya pengambilan statistik
+            // yang mengalami kegagalan.
+            if (
+              error.code === "permission-denied" &&
+              !welcomeName.textContent.includes("Administrator")
+            ) {
+              await signOut(auth);
+              window.location.replace("login.html");
+            }
+          }
+        });
+      }
+
+      // =====================================
+      // LOGOUT
+      // =====================================
+
+      logoutButton.addEventListener("click", async () => {
+        const confirmation = confirm("Apakah kamu yakin ingin keluar?");
+
+        if (!confirmation) return;
+
+        try {
+          await signOut(auth);
+          window.location.replace("login.html");
+        } catch (error) {
+          console.error("Logout error:", error);
+          alert("Gagal keluar dari akun.");
+        }
+      });
+
+      // =====================================
+      // START
+      // =====================================
+
+      initializeDashboard();
+    </script>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

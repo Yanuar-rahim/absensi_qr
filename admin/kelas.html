@@ -1,0 +1,1616 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Pengelompokan Kelas - Absensi QR</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: #f8fafc;
+      }
+
+      .nav-link {
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+
+      .nav-active,
+      .nav-active:hover {
+        background: #2563eb;
+        color: white;
+      }
+
+      .custom-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+
+      .roster-row {
+        background: #f8fafc;
+      }
+
+      .roster-table th,
+      .roster-table td {
+        padding: 12px 20px;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen">
+    <!-- Overlay -->
+    <div
+      id="sidebarOverlay"
+      class="fixed inset-0 z-40 hidden bg-slate-900/50 md:hidden"
+      onclick="closeSidebar()"
+    ></div>
+
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-300 md:translate-x-0"
+    >
+      <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white"
+        >
+          <i data-lucide="qr-code" class="h-6 w-6"></i>
+        </div>
+
+        <div>
+          <h1 class="text-lg font-bold text-slate-800">Absensi QR</h1>
+          <p class="text-xs text-slate-400">Administrator Panel</p>
+        </div>
+
+        <button
+          onclick="closeSidebar()"
+          class="ml-auto text-slate-400 md:hidden"
+          aria-label="Tutup menu"
+        >
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-4 py-6">
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Menu Utama
+        </p>
+
+        <nav class="space-y-2">
+          <a
+            href="../dashboard.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="layout-dashboard" class="h-5 w-5"></i>
+            Dashboard
+          </a>
+
+          <a
+            href="mahasiswa.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="users" class="h-5 w-5"></i>
+            Data Mahasiswa
+          </a>
+
+          <a
+            href="mata-kuliah.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="book-open" class="h-5 w-5"></i>
+            Mata Kuliah
+          </a>
+
+          <a
+            href="kelas.html"
+            class="nav-link nav-active flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium"
+          >
+            <i data-lucide="users-round" class="h-5 w-5"></i>
+            Pengelompokan Kelas
+          </a>
+
+          <a
+            href="sesi-absensi.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="qr-code" class="h-5 w-5"></i>
+            Sesi Absensi
+          </a>
+
+          <a
+            href="laporan.html"
+            class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
+          >
+            <i data-lucide="file-chart-column" class="h-5 w-5"></i>
+            Laporan Absensi
+          </a>
+        </nav>
+
+        <div class="my-6 border-t border-slate-100"></div>
+
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Akun
+        </p>
+
+        <button
+          id="logoutBtn"
+          class="nav-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500"
+        >
+          <i data-lucide="log-out" class="h-5 w-5"></i>
+          Keluar
+        </button>
+      </div>
+
+      <div class="border-t border-slate-100 p-4">
+        <div class="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
+          >
+            <i data-lucide="shield-check" class="h-5 w-5"></i>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold text-slate-700">Administrator</p>
+            <p class="text-xs text-slate-400">Panel Pengelola</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="min-h-screen md:ml-64">
+      <!-- Topbar -->
+      <header
+        class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+      >
+        <div class="flex items-center gap-3">
+          <button
+            onclick="openSidebar()"
+            class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+            aria-label="Buka menu"
+          >
+            <i data-lucide="menu" class="h-6 w-6"></i>
+          </button>
+
+          <div>
+            <h2 class="text-lg font-bold text-slate-800 sm:text-xl">
+              Pengelompokan Kelas
+            </h2>
+
+            <p class="hidden text-xs text-slate-400 sm:block">
+              Kelola kelas dan anggota mahasiswa
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden text-right sm:block">
+            <p id="adminName" class="text-sm font-semibold text-slate-700">
+              Memuat...
+            </p>
+            <p class="text-xs text-slate-400">Administrator</p>
+          </div>
+
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600"
+          >
+            <i data-lucide="user-round" class="h-5 w-5"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <section class="p-4 sm:p-6 lg:p-8">
+        <div
+          class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center"
+        >
+          <div>
+            <h1 class="text-xl font-bold text-slate-800 sm:text-2xl">
+              Daftar Kelas
+            </h1>
+
+            <p class="mt-1 text-sm text-slate-400">
+              Atur kelas mata kuliah dan mahasiswa yang tergabung di dalamnya.
+            </p>
+          </div>
+
+          <button
+            id="addClassBtn"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+          >
+            <i data-lucide="plus" class="h-5 w-5"></i>
+            Tambah Kelas
+          </button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600"
+              >
+                <i data-lucide="layers" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Total Kelas</p>
+                <h3 id="totalClasses" class="text-2xl font-bold text-slate-800">
+                  0
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"
+              >
+                <i data-lucide="check-circle" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Kelas Aktif</p>
+                <h3
+                  id="activeClasses"
+                  class="text-2xl font-bold text-slate-800"
+                >
+                  0
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600"
+              >
+                <i data-lucide="book-open" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Mata Kuliah Berkelas</p>
+                <h3 id="totalCourses" class="text-2xl font-bold text-slate-800">
+                  0
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm"
+          >
+            <div class="flex items-center gap-4">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"
+              >
+                <i data-lucide="users-round" class="h-6 w-6"></i>
+              </div>
+
+              <div>
+                <p class="text-sm text-slate-400">Total Anggota</p>
+                <h3 id="totalMembers" class="text-2xl font-bold text-slate-800">
+                  0
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div
+          class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
+        >
+          <div
+            class="flex flex-col gap-4 border-b border-slate-100 p-5 lg:flex-row lg:items-center lg:justify-between"
+          >
+            <div>
+              <h3 class="font-bold text-slate-800">Data Kelas</h3>
+              <p class="mt-1 text-xs text-slate-400">
+                Daftar kelas berdasarkan mata kuliah
+              </p>
+            </div>
+
+            <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+              <select
+                id="courseFilter"
+                class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-60"
+              >
+                <option value="">Semua Mata Kuliah</option>
+              </select>
+
+              <div class="relative w-full sm:max-w-xs">
+                <i
+                  data-lucide="search"
+                  class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                ></i>
+
+                <input
+                  id="searchInput"
+                  type="text"
+                  placeholder="Cari kelas atau dosen..."
+                  class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[1050px] text-left">
+              <thead class="bg-slate-50">
+                <tr
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  <th class="px-5 py-4">No.</th>
+                  <th class="px-5 py-4">Kode MK</th>
+                  <th class="px-5 py-4">Mata Kuliah</th>
+                  <th class="px-5 py-4">Nama Kelas</th>
+                  <th class="px-5 py-4">Dosen Pengampu</th>
+                  <th class="px-5 py-4 text-center">Anggota</th>
+                  <th class="px-5 py-4">Status</th>
+                  <th class="px-5 py-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody id="classTableBody">
+                <tr>
+                  <td
+                    colspan="8"
+                    class="px-5 py-12 text-center text-sm text-slate-400"
+                  >
+                    Memuat data kelas...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            class="flex flex-col justify-between gap-3 border-t border-slate-100 px-5 py-4 sm:flex-row sm:items-center"
+          >
+            <p id="tableInfo" class="text-xs text-slate-400">
+              Menampilkan 0 kelas
+            </p>
+
+            <button
+              id="refreshBtn"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+              Muat Ulang
+            </button>
+          </div>
+        </div>
+
+        <footer
+          class="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-400"
+        >
+          &copy; 2026 Laboratorium Teknik Informatika.
+        </footer>
+      </section>
+    </main>
+
+    <!-- MODAL TAMBAH / EDIT KELAS -->
+    <div
+      id="classModal"
+      class="fixed inset-0 z-[60] hidden items-center justify-center overflow-y-auto bg-slate-900/50 p-4"
+    >
+      <div class="my-auto w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+        <div
+          class="flex items-center justify-between border-b border-slate-100 p-5"
+        >
+          <div>
+            <h3 id="classModalTitle" class="text-lg font-bold text-slate-800">
+              Tambah Kelas
+            </h3>
+
+            <p class="mt-1 text-xs text-slate-400">
+              Lengkapi informasi kelas mata kuliah.
+            </p>
+          </div>
+
+          <button
+            id="closeClassModal"
+            class="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+          >
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+
+        <form id="classForm" class="space-y-4 p-5">
+          <div>
+            <label
+              for="courseInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Mata Kuliah
+            </label>
+
+            <select
+              id="courseInput"
+              required
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
+            >
+              <option value="">Pilih Mata Kuliah</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              for="classNameInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Nama Kelas
+            </label>
+
+            <input
+              id="classNameInput"
+              type="text"
+              required
+              placeholder="Contoh: Kelas A"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          <div>
+            <label
+              for="lecturerInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Dosen Pengampu
+            </label>
+
+            <input
+              id="lecturerInput"
+              type="text"
+              required
+              placeholder="Nama dosen pengampu"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          <div>
+            <label
+              for="statusInput"
+              class="mb-2 block text-sm font-medium text-slate-700"
+            >
+              Status
+            </label>
+
+            <select
+              id="statusInput"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
+            >
+              <option value="active">Aktif</option>
+              <option value="inactive">Tidak Aktif</option>
+            </select>
+          </div>
+
+          <div
+            class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end"
+          >
+            <button
+              type="button"
+              id="cancelClassBtn"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              Batal
+            </button>
+
+            <button
+              type="submit"
+              id="saveClassBtn"
+              class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+            >
+              Simpan Kelas
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL KELOLA ANGGOTA -->
+    <div
+      id="memberModal"
+      class="fixed inset-0 z-[70] hidden items-center justify-center overflow-y-auto bg-slate-900/50 p-4"
+    >
+      <div class="my-auto w-full max-w-3xl rounded-2xl bg-white shadow-2xl">
+        <div
+          class="flex items-center justify-between border-b border-slate-100 p-5"
+        >
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">
+              Kelola Anggota Kelas
+            </h3>
+
+            <p id="memberClassInfo" class="mt-1 text-xs text-slate-400">
+              Informasi kelas
+            </p>
+          </div>
+
+          <button
+            id="closeMemberModal"
+            class="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+          >
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4 p-5">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-xl bg-blue-50 p-4">
+              <p class="text-xs font-medium text-blue-500">Jumlah Anggota</p>
+              <p id="memberCount" class="mt-1 text-2xl font-bold text-blue-700">
+                0
+              </p>
+            </div>
+
+            <div class="rounded-xl bg-emerald-50 p-4">
+              <p class="text-xs font-medium text-emerald-500">
+                Mahasiswa Tersedia
+              </p>
+              <p
+                id="availableCount"
+                class="mt-1 text-2xl font-bold text-emerald-700"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <div class="relative flex-1">
+              <i
+                data-lucide="search"
+                class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              ></i>
+
+              <input
+                id="memberSearch"
+                type="text"
+                placeholder="Cari nama atau NIM mahasiswa..."
+                class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <button
+              id="selectAllBtn"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              Pilih Semua
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-slate-700">Daftar Mahasiswa</p>
+            <p id="selectedCount" class="text-xs font-medium text-blue-600">
+              0 dipilih
+            </p>
+          </div>
+
+          <div
+            id="memberList"
+            class="custom-scroll max-h-[42vh] overflow-y-auto rounded-xl border border-slate-200"
+          >
+            <div class="p-8 text-center text-sm text-slate-400">
+              Memuat mahasiswa...
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 rounded-xl bg-blue-50 p-4">
+            <div
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600"
+            >
+              <i data-lucide="info" class="h-4 w-4"></i>
+            </div>
+
+            <p class="text-xs leading-relaxed text-slate-600">
+              Satu mahasiswa hanya dapat terdaftar pada satu kelas dalam mata
+              kuliah yang sama. Mahasiswa tetap dapat mengikuti kelas berbeda
+              pada mata kuliah lainnya.
+            </p>
+          </div>
+
+          <div
+            class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end"
+          >
+            <button
+              id="cancelMemberBtn"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              Tutup
+            </button>
+
+            <button
+              id="saveMembersBtn"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+            >
+              <i data-lucide="save" class="h-4 w-4"></i>
+              Simpan Anggota
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-5 right-5 z-[80] hidden max-w-sm rounded-xl px-5 py-4 text-sm font-medium text-white shadow-xl"
+    >
+      <span id="toastMessage"></span>
+    </div>
+
+    <!-- SIDEBAR SCRIPT -->
+    <script>
+      function openSidebar() {
+        document
+          .getElementById("sidebar")
+          .classList.remove("-translate-x-full");
+        document.getElementById("sidebarOverlay").classList.remove("hidden");
+      }
+
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.add("-translate-x-full");
+        document.getElementById("sidebarOverlay").classList.add("hidden");
+      }
+
+      lucide.createIcons();
+    </script>
+
+    <!-- FIREBASE SCRIPT -->
+    <script type="module">
+      import { auth, db, authPersistence } from "../js/firebase.js";
+
+      import {
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+      import {
+        collection,
+        doc,
+        getDoc,
+        getDocs,
+        setDoc,
+        updateDoc,
+        deleteDoc,
+        writeBatch,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+      const $ = (id) => document.getElementById(id);
+
+      const classModal = $("classModal");
+      const memberModal = $("memberModal");
+
+      let courses = [];
+      let classes = [];
+      let students = [];
+      let members = [];
+
+      let editingClassId = null;
+      let selectedClass = null;
+
+      let selectedNims = new Set();
+      let originalNims = new Set();
+
+      let expandedClassId = null;
+      let isSaving = false;
+      let toastTimeout = null;
+
+      // AUTHENTICATION
+      await authPersistence;
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        try {
+          const adminSnap = await getDoc(doc(db, "admins", user.uid));
+
+          if (
+            !adminSnap.exists() ||
+            adminSnap.data().role !== "admin" ||
+            adminSnap.data().status !== "active"
+          ) {
+            alert("Akses administrator tidak diizinkan.");
+            await signOut(auth);
+            window.location.href = "../login.html";
+            return;
+          }
+
+          $("adminName").textContent = adminSnap.data().name || "Administrator";
+
+          await loadAllData();
+        } catch (error) {
+          console.error("Pemeriksaan admin gagal:", error);
+          showToast("Gagal memeriksa akses administrator.", "error");
+        }
+      });
+
+      // LOAD DATA
+      async function loadAllData() {
+        await Promise.all([
+          loadCourses(),
+          loadStudents(),
+          loadClasses(),
+          loadMembers(),
+        ]);
+
+        renderCourseOptions();
+        renderCourseFilter();
+        renderClasses();
+        updateStatistics();
+      }
+
+      async function loadCourses() {
+        const snapshot = await getDocs(collection(db, "courses"));
+        courses = snapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+        }));
+      }
+
+      async function loadStudents() {
+        const snapshot = await getDocs(collection(db, "students"));
+        students = snapshot.docs
+          .map((item) => ({
+            id: item.id,
+            ...item.data(),
+          }))
+          .filter((student) => student.nim && student.name);
+      }
+
+      async function loadClasses() {
+        const snapshot = await getDocs(collection(db, "courseClasses"));
+        classes = snapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+        }));
+      }
+
+      async function loadMembers() {
+        const snapshot = await getDocs(collection(db, "classMembers"));
+        members = snapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+          studentNim: String(item.data().studentNim ?? ""),
+        }));
+      }
+
+      // COURSE OPTIONS
+      function getCourseCode(course) {
+        return course.code || course.courseCode || course.id;
+      }
+
+      function getCourseName(course) {
+        return course.name || course.courseName || "Tanpa Nama";
+      }
+
+      function renderCourseOptions() {
+        $("courseInput").innerHTML =
+          `<option value="">Pilih Mata Kuliah</option>` +
+          courses
+            .map(
+              (course) => `
+            <option value="${escapeHTML(course.id)}">
+              ${escapeHTML(getCourseCode(course))} - ${escapeHTML(getCourseName(course))}
+            </option>
+          `,
+            )
+            .join("");
+      }
+
+      function renderCourseFilter() {
+        const current = $("courseFilter").value;
+
+        $("courseFilter").innerHTML =
+          `<option value="">Semua Mata Kuliah</option>` +
+          courses
+            .map(
+              (course) => `
+            <option value="${escapeHTML(course.id)}">
+              ${escapeHTML(getCourseCode(course))} - ${escapeHTML(getCourseName(course))}
+            </option>
+          `,
+            )
+            .join("");
+
+        $("courseFilter").value = current;
+      }
+
+      // STATISTICS
+      function updateStatistics() {
+        $("totalClasses").textContent = classes.length;
+
+        $("activeClasses").textContent = classes.filter(
+          (item) => item.status === "active",
+        ).length;
+
+        $("totalCourses").textContent = new Set(
+          classes.map((item) => item.courseId),
+        ).size;
+
+        $("totalMembers").textContent = members.length;
+      }
+
+      function getClassMembers(classId) {
+        return members.filter((item) => item.classId === classId);
+      }
+
+      // RENDER ROSTER
+      function renderRoster(classId) {
+        const classMembers = getClassMembers(classId);
+
+        if (!classMembers.length) {
+          return `
+            <tr>
+              <td colspan="3" class="px-5 py-8 text-center text-sm text-slate-400">
+                Belum ada anggota kelas. Gunakan tombol Kelola Anggota untuk menambahkan mahasiswa.
+              </td>
+            </tr>
+          `;
+        }
+
+        return classMembers
+          .sort((a, b) =>
+            String(a.studentNim).localeCompare(String(b.studentNim)),
+          )
+          .map(
+            (member, index) => `
+            <tr class="border-t border-slate-100 transition hover:bg-slate-50">
+              <td class="w-16 text-center text-slate-500">${index + 1}</td>
+              <td class="font-medium text-slate-700">${escapeHTML(member.studentNim)}</td>
+              <td class="font-medium text-slate-700">${escapeHTML(member.studentName || "-")}</td>
+            </tr>
+          `,
+          )
+          .join("");
+      }
+
+      // RENDER CLASS TABLE
+      function renderClasses() {
+        const search = $("searchInput").value.toLowerCase().trim();
+        const courseFilter = $("courseFilter").value;
+
+        const filtered = classes.filter((item) => {
+          const matchesSearch =
+            String(item.courseCode || "")
+              .toLowerCase()
+              .includes(search) ||
+            String(item.courseName || "")
+              .toLowerCase()
+              .includes(search) ||
+            String(item.className || "")
+              .toLowerCase()
+              .includes(search) ||
+            String(item.lecturerName || "")
+              .toLowerCase()
+              .includes(search);
+
+          const matchesCourse = !courseFilter || item.courseId === courseFilter;
+
+          return matchesSearch && matchesCourse;
+        });
+
+        if (!filtered.length) {
+          $("classTableBody").innerHTML = `
+            <tr>
+              <td colspan="8" class="px-5 py-12 text-center text-sm text-slate-400">
+                ${
+                  search || courseFilter
+                    ? "Kelas tidak ditemukan."
+                    : "Belum ada kelas. Silakan tambahkan data."
+                }
+              </td>
+            </tr>
+          `;
+
+          $("tableInfo").textContent = "Menampilkan 0 kelas";
+          lucide.createIcons();
+          return;
+        }
+
+        let html = "";
+
+        filtered.forEach((item, index) => {
+          const count = getClassMembers(item.id).length;
+          const isExpanded = expandedClassId === item.id;
+
+          const status =
+            item.status === "active"
+              ? `<span class="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-600">Aktif</span>`
+              : `<span class="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">Tidak Aktif</span>`;
+
+          html += `
+            <tr class="border-t border-slate-100 transition hover:bg-slate-50">
+              <td class="px-5 py-4 text-sm text-slate-500">${index + 1}</td>
+
+              <td class="px-5 py-4">
+                <span class="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                  ${escapeHTML(item.courseCode || "-")}
+                </span>
+              </td>
+
+              <td class="px-5 py-4 text-sm font-medium text-slate-700">
+                ${escapeHTML(item.courseName || "-")}
+              </td>
+
+              <td class="px-5 py-4 text-sm font-medium text-slate-700">
+                ${escapeHTML(item.className || "-")}
+              </td>
+
+              <td class="px-5 py-4 text-sm text-slate-600">
+                ${escapeHTML(item.lecturerName || "-")}
+              </td>
+
+              <td class="px-5 py-4 text-center">
+                <span class="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                  ${count} mahasiswa
+                </span>
+              </td>
+
+              <td class="px-5 py-4">${status}</td>
+
+              <td class="px-5 py-4">
+                <div class="flex items-center justify-center gap-2">
+                  <button
+                    onclick="toggleClassMembers('${escapeHTML(item.id)}')"
+                    title="${isExpanded ? "Tutup daftar anggota" : "Lihat anggota"}"
+                    class="rounded-lg p-2 ${isExpanded ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}"
+                  >
+                    <i data-lucide="${isExpanded ? "chevron-up" : "chevron-down"}" class="h-4 w-4"></i>
+                  </button>
+
+                  <button
+                    onclick="manageMembers('${escapeHTML(item.id)}')"
+                    title="Kelola anggota"
+                    class="rounded-lg bg-emerald-50 p-2 text-emerald-600 hover:bg-emerald-100"
+                  >
+                    <i data-lucide="users" class="h-4 w-4"></i>
+                  </button>
+
+                  <button
+                    onclick="editClass('${escapeHTML(item.id)}')"
+                    title="Edit kelas"
+                    class="rounded-lg bg-blue-50 p-2 text-blue-600 hover:bg-blue-100"
+                  >
+                    <i data-lucide="pencil" class="h-4 w-4"></i>
+                  </button>
+
+                  <button
+                    onclick="removeClass('${escapeHTML(item.id)}')"
+                    title="Hapus kelas"
+                    class="rounded-lg bg-red-50 p-2 text-red-600 hover:bg-red-100"
+                  >
+                    <i data-lucide="trash-2" class="h-4 w-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+
+          if (isExpanded) {
+            html += `
+              <tr class="roster-row border-t border-slate-100">
+                <td colspan="8" class="px-5 py-5">
+                  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                    <div class="flex flex-col justify-between gap-3 border-b border-slate-100 bg-slate-50 px-5 py-4 sm:flex-row sm:items-center">
+                      <div>
+                        <p class="text-sm font-bold text-slate-800">
+                          Daftar Anggota ${escapeHTML(item.className || "")}
+                        </p>
+                        <p class="mt-1 text-xs text-slate-400">
+                          ${escapeHTML(item.courseCode || "")} - ${escapeHTML(item.courseName || "")}
+                        </p>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <span class="rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700">
+                          ${count} mahasiswa
+                        </span>
+
+                        <button
+                          onclick="manageMembers('${escapeHTML(item.id)}')"
+                          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+                        >
+                          <i data-lucide="user-plus" class="h-3.5 w-3.5"></i>
+                          Kelola Anggota
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                      <table class="roster-table w-full min-w-[400px] text-left text-sm">
+                        <thead class="bg-white text-xs font-semibold uppercase tracking-wider text-slate-500">
+                          <tr>
+                            <th class="w-16 text-center">No.</th>
+                            <th class="w-1/3">NIM</th>
+                            <th>Nama Mahasiswa</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${renderRoster(item.id)}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
+        });
+
+        $("classTableBody").innerHTML = html;
+        $("tableInfo").textContent =
+          `Menampilkan ${filtered.length} dari ${classes.length} kelas`;
+
+        lucide.createIcons();
+      }
+
+      window.toggleClassMembers = function (classId) {
+        expandedClassId = expandedClassId === classId ? null : classId;
+        renderClasses();
+      };
+
+      // CLASS MODAL
+      function openClassModal() {
+        classModal.classList.remove("hidden");
+        classModal.classList.add("flex");
+      }
+
+      function closeClassModal() {
+        classModal.classList.add("hidden");
+        classModal.classList.remove("flex");
+        $("classForm").reset();
+        editingClassId = null;
+        $("classModalTitle").textContent = "Tambah Kelas";
+        $("saveClassBtn").textContent = "Simpan Kelas";
+      }
+
+      $("addClassBtn").addEventListener("click", () => {
+        editingClassId = null;
+        $("classForm").reset();
+        $("classModalTitle").textContent = "Tambah Kelas";
+        $("saveClassBtn").textContent = "Simpan Kelas";
+        openClassModal();
+      });
+
+      $("closeClassModal").addEventListener("click", closeClassModal);
+      $("cancelClassBtn").addEventListener("click", closeClassModal);
+
+      // SAVE CLASS
+      $("classForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (isSaving) return;
+
+        const courseId = $("courseInput").value;
+        const className = $("classNameInput").value.trim();
+        const lecturerName = $("lecturerInput").value.trim();
+        const status = $("statusInput").value;
+
+        const selectedCourse = courses.find((item) => item.id === courseId);
+
+        if (!selectedCourse) {
+          showToast("Silakan pilih mata kuliah.", "error");
+          return;
+        }
+
+        if (!className || !lecturerName) {
+          showToast("Lengkapi semua data kelas.", "error");
+          return;
+        }
+
+        const courseCode = getCourseCode(selectedCourse);
+        const courseName = getCourseName(selectedCourse);
+
+        const duplicate = classes.find(
+          (item) =>
+            item.id !== editingClassId &&
+            item.courseId === courseId &&
+            String(item.className || "").toLowerCase() ===
+              className.toLowerCase(),
+        );
+
+        if (duplicate) {
+          showToast(
+            "Nama kelas tersebut sudah digunakan pada mata kuliah ini.",
+            "error",
+          );
+          return;
+        }
+
+        isSaving = true;
+        $("saveClassBtn").disabled = true;
+        $("saveClassBtn").textContent = "Menyimpan...";
+
+        try {
+          const classData = {
+            courseId,
+            courseCode,
+            courseName,
+            className,
+            lecturerName,
+            status,
+            updatedAt: serverTimestamp(),
+          };
+
+          if (editingClassId) {
+            await updateDoc(
+              doc(db, "courseClasses", editingClassId),
+              classData,
+            );
+            showToast("Data kelas berhasil diperbarui.");
+          } else {
+            const newRef = doc(collection(db, "courseClasses"));
+            await setDoc(newRef, {
+              ...classData,
+              createdAt: serverTimestamp(),
+            });
+            showToast("Kelas berhasil ditambahkan.");
+          }
+
+          closeClassModal();
+          await loadClasses();
+          renderClasses();
+          updateStatistics();
+        } catch (error) {
+          console.error(error);
+          showToast(error.message || "Gagal menyimpan data kelas.", "error");
+        } finally {
+          isSaving = false;
+          $("saveClassBtn").disabled = false;
+          $("saveClassBtn").textContent = "Simpan Kelas";
+        }
+      });
+
+      // EDIT CLASS
+      window.editClass = function (classId) {
+        const item = classes.find((data) => data.id === classId);
+        if (!item) return;
+
+        editingClassId = classId;
+        $("courseInput").value = item.courseId || "";
+        $("classNameInput").value = item.className || "";
+        $("lecturerInput").value = item.lecturerName || "";
+        $("statusInput").value = item.status || "active";
+
+        $("classModalTitle").textContent = "Edit Kelas";
+        $("saveClassBtn").textContent = "Simpan Perubahan";
+        openClassModal();
+      };
+
+      // DELETE CLASS
+      window.removeClass = async function (classId) {
+        const item = classes.find((data) => data.id === classId);
+        if (!item) return;
+
+        const count = getClassMembers(classId).length;
+
+        const confirmation = confirm(
+          `Hapus kelas ${item.className}?\n\nSebanyak ${count} data keanggotaan mahasiswa pada kelas ini juga akan dihapus.`,
+        );
+
+        if (!confirmation) return;
+
+        try {
+          const relatedMembers = getClassMembers(classId);
+
+          for (let i = 0; i < relatedMembers.length; i += 450) {
+            const batch = writeBatch(db);
+            const chunk = relatedMembers.slice(i, i + 450);
+
+            chunk.forEach((member) => {
+              batch.delete(doc(db, "classMembers", member.id));
+            });
+
+            await batch.commit();
+          }
+
+          await deleteDoc(doc(db, "courseClasses", classId));
+
+          if (expandedClassId === classId) expandedClassId = null;
+
+          showToast("Kelas dan data anggotanya berhasil dihapus.");
+
+          await loadClasses();
+          await loadMembers();
+          renderClasses();
+          updateStatistics();
+        } catch (error) {
+          console.error(error);
+          showToast(error.message || "Gagal menghapus kelas.", "error");
+        }
+      };
+
+      // MEMBER MODAL
+      function openMemberModal() {
+        memberModal.classList.remove("hidden");
+        memberModal.classList.add("flex");
+      }
+
+      function closeMemberModal() {
+        memberModal.classList.add("hidden");
+        memberModal.classList.remove("flex");
+        selectedClass = null;
+        selectedNims.clear();
+        originalNims.clear();
+        $("memberSearch").value = "";
+      }
+
+      $("closeMemberModal").addEventListener("click", closeMemberModal);
+      $("cancelMemberBtn").addEventListener("click", closeMemberModal);
+
+      // MANAGE MEMBERS
+      window.manageMembers = async function (classId) {
+        selectedClass = classes.find((item) => item.id === classId);
+        if (!selectedClass) return;
+
+        try {
+          await Promise.all([loadStudents(), loadMembers()]);
+
+          const currentMembers = getClassMembers(classId);
+
+          originalNims = new Set(
+            currentMembers.map((item) => String(item.studentNim)),
+          );
+
+          selectedNims = new Set(originalNims);
+
+          $("memberClassInfo").textContent =
+            `${selectedClass.courseCode} - ${selectedClass.courseName} | ${selectedClass.className}`;
+
+          $("memberSearch").value = "";
+          renderMemberList();
+          openMemberModal();
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal memuat anggota kelas.", "error");
+        }
+      };
+
+      // MEMBER CONFLICT
+      function getStudentConflict(studentNim) {
+        if (!selectedClass) return null;
+
+        const nim = String(studentNim);
+
+        return members.find((member) => {
+          if (String(member.studentNim) !== nim) return false;
+          if (member.classId === selectedClass.id) return false;
+          return member.courseId === selectedClass.courseId;
+        });
+      }
+
+      // RENDER MEMBER LIST
+      function renderMemberList() {
+        if (!selectedClass) return;
+
+        const search = $("memberSearch").value.toLowerCase().trim();
+
+        const filteredStudents = students.filter((student) => {
+          const name = String(student.name || "").toLowerCase();
+          const nim = String(student.nim || "").toLowerCase();
+          return name.includes(search) || nim.includes(search);
+        });
+
+        const available = students.filter(
+          (student) => !getStudentConflict(String(student.nim)),
+        );
+
+        $("memberCount").textContent = selectedNims.size;
+        $("availableCount").textContent = available.length;
+        $("selectedCount").textContent = `${selectedNims.size} dipilih`;
+
+        if (!filteredStudents.length) {
+          $("memberList").innerHTML = `
+            <div class="p-8 text-center text-sm text-slate-400">
+              Mahasiswa tidak ditemukan.
+            </div>
+          `;
+          return;
+        }
+
+        $("memberList").innerHTML = filteredStudents
+          .map((student) => {
+            const nim = String(student.nim);
+            const checked = selectedNims.has(nim);
+            const conflict = getStudentConflict(nim);
+            const disabled = Boolean(conflict) && !checked;
+
+            let note = "";
+
+            if (conflict) {
+              const conflictClass = classes.find(
+                (item) => item.id === conflict.classId,
+              );
+
+              note = checked
+                ? "Anggota kelas ini"
+                : `Sudah terdaftar di ${conflictClass?.className || "kelas lain"}`;
+            } else {
+              note = checked ? "Anggota kelas ini" : "Tersedia";
+            }
+
+            return `
+            <label class="flex cursor-pointer items-center gap-3 border-b border-slate-100 px-4 py-3 last:border-0 ${
+              disabled
+                ? "cursor-not-allowed bg-slate-50 opacity-60"
+                : "hover:bg-slate-50"
+            }">
+              <input
+                type="checkbox"
+                class="member-checkbox h-4 w-4 rounded border-slate-300 text-blue-600"
+                value="${escapeHTML(nim)}"
+                ${checked ? "checked" : ""}
+                ${disabled ? "disabled" : ""}
+              >
+
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">
+                ${escapeHTML((student.name || "?").charAt(0).toUpperCase())}
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-slate-700">
+                  ${escapeHTML(student.name)}
+                </p>
+                <p class="mt-0.5 text-xs text-slate-400">
+                  NIM: ${escapeHTML(nim)}
+                </p>
+              </div>
+
+              <span class="text-right text-xs ${
+                disabled
+                  ? "text-red-500"
+                  : checked
+                    ? "text-blue-600"
+                    : "text-slate-400"
+              }">
+                ${escapeHTML(note)}
+              </span>
+            </label>
+          `;
+          })
+          .join("");
+
+        document.querySelectorAll(".member-checkbox").forEach((checkbox) => {
+          checkbox.addEventListener("change", () => {
+            const nim = checkbox.value;
+
+            if (checkbox.checked) {
+              selectedNims.add(nim);
+            } else {
+              selectedNims.delete(nim);
+            }
+
+            $("memberCount").textContent = selectedNims.size;
+            $("selectedCount").textContent = `${selectedNims.size} dipilih`;
+          });
+        });
+      }
+
+      $("memberSearch").addEventListener("input", renderMemberList);
+
+      // SELECT ALL
+      $("selectAllBtn").addEventListener("click", () => {
+        if (!selectedClass) return;
+
+        const search = $("memberSearch").value.toLowerCase().trim();
+
+        const filteredStudents = students.filter((student) => {
+          const name = String(student.name || "").toLowerCase();
+          const nim = String(student.nim || "").toLowerCase();
+          return name.includes(search) || nim.includes(search);
+        });
+
+        filteredStudents.forEach((student) => {
+          const nim = String(student.nim);
+          if (!getStudentConflict(nim)) selectedNims.add(nim);
+        });
+
+        renderMemberList();
+      });
+
+      // SAVE MEMBERS
+      $("saveMembersBtn").addEventListener("click", async () => {
+        if (!selectedClass || isSaving) return;
+
+        const added = [...selectedNims].filter((nim) => !originalNims.has(nim));
+
+        const removed = [...originalNims].filter(
+          (nim) => !selectedNims.has(nim),
+        );
+
+        if (!added.length && !removed.length) {
+          showToast("Tidak ada perubahan anggota.");
+          closeMemberModal();
+          return;
+        }
+
+        for (const nim of added) {
+          const conflict = getStudentConflict(nim);
+
+          if (conflict) {
+            showToast(
+              `NIM ${nim} sudah terdaftar pada kelas lain di mata kuliah ini.`,
+              "error",
+            );
+            return;
+          }
+        }
+
+        const updatedClassId = selectedClass.id;
+        const operationCount = added.length + removed.length;
+
+        if (operationCount > 500) {
+          showToast(
+            "Perubahan melebihi batas 500 operasi. Kurangi jumlah perubahan.",
+            "error",
+          );
+          return;
+        }
+
+        isSaving = true;
+        $("saveMembersBtn").disabled = true;
+        $("saveMembersBtn").textContent = "Menyimpan...";
+
+        try {
+          const batch = writeBatch(db);
+
+          added.forEach((nim) => {
+            const student = students.find((item) => String(item.nim) === nim);
+
+            if (!student) return;
+
+            const memberId = `${updatedClassId}_${nim}`;
+            const memberRef = doc(db, "classMembers", memberId);
+
+            batch.set(memberRef, {
+              classId: updatedClassId,
+              courseId: selectedClass.courseId,
+              courseCode: selectedClass.courseCode,
+              courseName: selectedClass.courseName,
+              className: selectedClass.className,
+              studentNim: nim,
+              studentName: student.name,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            });
+          });
+
+          removed.forEach((nim) => {
+            const memberId = `${updatedClassId}_${nim}`;
+            batch.delete(doc(db, "classMembers", memberId));
+          });
+
+          await batch.commit();
+
+          showToast("Anggota kelas berhasil diperbarui.");
+          closeMemberModal();
+
+          await loadMembers();
+
+          expandedClassId = updatedClassId;
+          renderClasses();
+          updateStatistics();
+        } catch (error) {
+          console.error("Simpan anggota:", error);
+          showToast(error.message || "Gagal menyimpan anggota kelas.", "error");
+        } finally {
+          isSaving = false;
+          $("saveMembersBtn").disabled = false;
+          $("saveMembersBtn").innerHTML =
+            `<i data-lucide="save" class="h-4 w-4"></i> Simpan Anggota`;
+          lucide.createIcons();
+        }
+      });
+
+      // SEARCH & FILTER
+      $("searchInput").addEventListener("input", renderClasses);
+      $("courseFilter").addEventListener("change", renderClasses);
+
+      // REFRESH
+      $("refreshBtn").addEventListener("click", async () => {
+        $("refreshBtn").disabled = true;
+
+        try {
+          await loadAllData();
+          showToast("Data berhasil diperbarui.");
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal memperbarui data.", "error");
+        } finally {
+          $("refreshBtn").disabled = false;
+        }
+      });
+
+      // LOGOUT
+      $("logoutBtn").addEventListener("click", async () => {
+        if (!confirm("Apakah kamu yakin ingin keluar?")) return;
+
+        try {
+          await signOut(auth);
+          window.location.href = "../login.html";
+        } catch (error) {
+          console.error(error);
+          showToast("Gagal keluar dari akun.", "error");
+        }
+      });
+
+      // TOAST
+      function showToast(message, type = "success") {
+        const toast = $("toast");
+        $("toastMessage").textContent = message;
+
+        toast.className =
+          "fixed bottom-5 right-5 z-[80] max-w-sm rounded-xl px-5 py-4 text-sm font-medium text-white shadow-xl " +
+          (type === "error" ? "bg-red-600" : "bg-emerald-600");
+
+        clearTimeout(toastTimeout);
+
+        toastTimeout = setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 3000);
+      }
+
+      // HTML ESCAPE
+      function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (character) => {
+          const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;",
+          };
+
+          return entities[character];
+        });
+      }
+    </script>
+  </body>
+</html>

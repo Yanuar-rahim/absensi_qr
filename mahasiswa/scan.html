@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Scan Absensi - Absensi QR</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: Poppins, sans-serif;
+      }
+
+      body {
+        background: #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body class="flex min-h-screen items-center justify-center p-4">
+    <main class="w-full max-w-md">
+      <!-- HEADER -->
+      <div class="mb-6 text-center">
+        <div
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <path d="M14 14h3v3h-3zM21 14v3M14 21h3M21 21h.01" />
+          </svg>
+        </div>
+
+        <h1 class="text-2xl font-bold text-slate-800">Absensi QR</h1>
+
+        <p class="mt-2 text-sm text-slate-500">
+          Konfirmasi kehadiran perkuliahan
+        </p>
+      </div>
+
+      <!-- MAIN CARD -->
+      <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+        <!-- LOADING -->
+        <div id="loadingState" class="py-8 text-center">
+          <div
+            class="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-blue-100 border-t-blue-600"
+          ></div>
+
+          <p id="loadingText" class="mt-4 text-sm text-slate-500">
+            Menghubungkan ke sistem absensi...
+          </p>
+        </div>
+
+        <!-- SESSION CONTENT -->
+        <div id="sessionContent" class="hidden">
+          <!-- SESSION INFORMATION -->
+          <div class="mb-5 rounded-xl bg-blue-50 p-4">
+            <p class="text-xs font-medium text-blue-500">MATA KULIAH</p>
+
+            <h2 id="courseName" class="mt-1 text-lg font-bold text-slate-800">
+              -
+            </h2>
+
+            <p id="courseCode" class="mt-1 text-xs text-slate-500">-</p>
+
+            <div class="mt-3 rounded-lg border border-blue-100 bg-white p-3">
+              <p class="text-xs text-slate-400">KELAS</p>
+              <p
+                id="className"
+                class="mt-1 text-sm font-semibold text-slate-700"
+              >
+                -
+              </p>
+              <p id="lecturerName" class="mt-1 text-xs text-slate-500"></p>
+            </div>
+
+            <div
+              class="mt-4 grid grid-cols-2 gap-3 border-t border-blue-100 pt-3"
+            >
+              <div>
+                <p class="text-xs text-slate-400">Pertemuan</p>
+
+                <p
+                  id="meetingNumber"
+                  class="mt-1 text-sm font-semibold text-slate-700"
+                >
+                  -
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs text-slate-400">Tanggal</p>
+
+                <p
+                  id="sessionDate"
+                  class="mt-1 text-sm font-semibold text-slate-700"
+                >
+                  -
+                </p>
+              </div>
+
+              <div class="col-span-2">
+                <p class="text-xs text-slate-400">Waktu Absensi</p>
+
+                <p
+                  id="sessionTime"
+                  class="mt-1 text-sm font-semibold text-slate-700"
+                >
+                  -
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ATTENDANCE FORM -->
+          <form id="attendanceForm" class="space-y-4">
+            <!-- NIM -->
+            <div>
+              <label
+                for="nimInput"
+                class="mb-2 block text-sm font-semibold text-slate-700"
+              >
+                Nomor Induk Mahasiswa (NIM)
+              </label>
+
+              <input
+                id="nimInput"
+                type="text"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="Masukkan NIM Anda"
+                maxlength="30"
+                required
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              <p class="mt-2 text-xs text-slate-400">
+                Gunakan NIM yang telah terdaftar dalam kelas perkuliahan ini.
+              </p>
+            </div>
+
+            <!-- STUDENT INFORMATION -->
+            <div
+              id="studentInfo"
+              class="hidden rounded-xl border border-emerald-100 bg-emerald-50 p-4"
+            >
+              <p class="text-xs text-emerald-600">Data mahasiswa ditemukan</p>
+
+              <p id="studentName" class="mt-1 font-semibold text-slate-800"></p>
+
+              <p id="studentNim" class="mt-1 text-xs text-slate-500"></p>
+
+              <p
+                id="studentClass"
+                class="mt-2 text-xs font-medium text-emerald-700"
+              ></p>
+            </div>
+
+            <!-- MESSAGE -->
+            <div id="messageBox" class="hidden rounded-xl p-3 text-sm"></div>
+
+            <!-- CHECK NIM -->
+            <button
+              id="checkButton"
+              type="button"
+              class="w-full rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Periksa NIM
+            </button>
+
+            <!-- SUBMIT -->
+            <button
+              id="submitButton"
+              type="submit"
+              disabled
+              class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Konfirmasi Kehadiran
+            </button>
+          </form>
+        </div>
+
+        <!-- ERROR -->
+        <div id="errorState" class="hidden py-6 text-center">
+          <div
+            class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-500"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="m15 9-6 6m0-6 6 6" />
+            </svg>
+          </div>
+
+          <h2 class="mt-4 font-bold text-slate-800">Sesi Tidak Tersedia</h2>
+
+          <p id="errorText" class="mt-2 text-sm text-slate-500">
+            QR Code tidak valid atau sesi sudah ditutup.
+          </p>
+        </div>
+
+        <!-- SUCCESS -->
+        <div id="successState" class="hidden py-6 text-center">
+          <div
+            class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="34"
+              height="34"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 6 9 17l-5-5" />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          </div>
+
+          <h2 class="mt-4 text-xl font-bold text-slate-800">
+            Absensi Berhasil!
+          </h2>
+
+          <p class="mt-2 text-sm text-slate-500">
+            Kehadiran Anda berhasil dicatat.
+          </p>
+
+          <div class="mt-5 rounded-xl bg-emerald-50 p-4 text-left">
+            <p id="successName" class="font-semibold text-slate-800"></p>
+
+            <p id="successNim" class="mt-1 text-xs text-slate-500"></p>
+
+            <p id="successCourse" class="mt-2 text-xs text-slate-500"></p>
+
+            <p id="successClass" class="mt-1 text-xs text-slate-500"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <p class="mt-5 text-center text-xs text-slate-400">
+        Sistem Absensi QR Mahasiswa &copy; 2026
+      </p>
+    </main>
+
+    <!-- FIREBASE -->
+    <script type="module">
+      // =====================================
+      // 1. FIREBASE IMPORT
+      // =====================================
+
+      import { auth, db } from "../js/firebase.js";
+
+      import { signInAnonymously } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+      import {
+        doc,
+        getDoc,
+        setDoc,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+      // =====================================
+      // 2. URL PARAMETERS
+      // =====================================
+
+      const params = new URLSearchParams(window.location.search);
+
+      const sessionId = params.get("sessionId");
+      const token = params.get("token");
+
+      // =====================================
+      // 3. ELEMENTS
+      // =====================================
+
+      const loadingState = document.getElementById("loadingState");
+      const loadingText = document.getElementById("loadingText");
+
+      const sessionContent = document.getElementById("sessionContent");
+      const errorState = document.getElementById("errorState");
+      const successState = document.getElementById("successState");
+
+      const nimInput = document.getElementById("nimInput");
+      const checkButton = document.getElementById("checkButton");
+      const submitButton = document.getElementById("submitButton");
+
+      const studentInfo = document.getElementById("studentInfo");
+      const messageBox = document.getElementById("messageBox");
+
+      // =====================================
+      // 4. VARIABLES
+      // =====================================
+
+      let currentSession = null;
+      let currentStudent = null;
+      let currentMembership = null;
+      let isSubmitting = false;
+      let isChecking = false;
+
+      // =====================================
+      // 5. MESSAGE
+      // =====================================
+
+      function showMessage(message, type = "error") {
+        messageBox.textContent = message;
+
+        messageBox.className =
+          "rounded-xl p-3 text-sm " +
+          (type === "success"
+            ? "bg-emerald-50 text-emerald-700"
+            : "bg-red-50 text-red-600");
+
+        messageBox.classList.remove("hidden");
+      }
+
+      function hideMessage() {
+        messageBox.classList.add("hidden");
+      }
+
+      // =====================================
+      // 6. ERROR
+      // =====================================
+
+      function showError(message) {
+        loadingState.classList.add("hidden");
+        sessionContent.classList.add("hidden");
+        successState.classList.add("hidden");
+
+        errorState.classList.remove("hidden");
+
+        document.getElementById("errorText").textContent = message;
+      }
+
+      // =====================================
+      // 7. ANONYMOUS AUTHENTICATION
+      // =====================================
+
+      async function initializeStudentAuth() {
+        try {
+          loadingText.textContent = "Menghubungkan autentikasi mahasiswa...";
+
+          await auth.authStateReady();
+
+          if (!auth.currentUser) {
+            await signInAnonymously(auth);
+          }
+
+          if (!auth.currentUser) {
+            throw new Error("Firebase Authentication tidak menghasilkan user.");
+          }
+
+          console.log("Autentikasi mahasiswa berhasil.");
+          console.log("Anonymous UID:", auth.currentUser.uid);
+          console.log("Auth Project:", auth.app.options.projectId);
+          console.log("Firestore Project:", db.app.options.projectId);
+
+          return true;
+        } catch (error) {
+          console.error("Anonymous authentication error:", error);
+
+          let message = "Gagal melakukan autentikasi mahasiswa.";
+
+          if (error.code === "auth/operation-not-allowed") {
+            message = "Anonymous Authentication belum diaktifkan di Firebase.";
+          } else if (error.code === "auth/network-request-failed") {
+            message = "Koneksi internet bermasalah. Silakan coba kembali.";
+          }
+
+          showError(message);
+
+          return false;
+        }
+      }
+
+      // =====================================
+      // 8. SESSION VALIDATION
+      // =====================================
+
+      function isSessionValid(session) {
+        if (!session || session.status !== "active") {
+          return false;
+        }
+
+        const now = Date.now();
+
+        const start = session.startsAt?.toDate?.().getTime();
+        const end = session.expiresAt?.toDate?.().getTime();
+
+        return (
+          Number.isFinite(start) &&
+          Number.isFinite(end) &&
+          now >= start &&
+          now <= end
+        );
+      }
+
+      // =====================================
+      // 9. FORMAT DATE
+      // =====================================
+
+      function formatDate(value) {
+        if (!value) return "-";
+
+        return new Date(value + "T00:00:00").toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
+      }
+
+      // =====================================
+      // 10. LOAD SESSION
+      // =====================================
+
+      async function loadSession() {
+        if (!sessionId || !token) {
+          showError("QR Code tidak memiliki informasi sesi yang lengkap.");
+          return;
+        }
+
+        try {
+          loadingText.textContent = "Memeriksa sesi absensi...";
+
+          const sessionRef = doc(db, "sessions", sessionId);
+          const snapshot = await getDoc(sessionRef);
+
+          if (!snapshot.exists()) {
+            showError("Sesi absensi tidak ditemukan.");
+            return;
+          }
+
+          const session = snapshot.data();
+
+          // Validasi token
+          if (!session.token || session.token !== token) {
+            showError("Token QR Code tidak valid.");
+            return;
+          }
+
+          // Validasi waktu dan status
+          if (!isSessionValid(session)) {
+            showError(
+              "Sesi belum dimulai, sudah berakhir, atau telah ditutup.",
+            );
+            return;
+          }
+
+          // Validasi informasi sesi
+          if (
+            !session.courseId ||
+            !session.courseCode ||
+            !session.courseName ||
+            !session.classId ||
+            !session.className ||
+            !session.date ||
+            session.meeting == null ||
+            !session.startsAt ||
+            !session.expiresAt
+          ) {
+            showError(
+              "Informasi sesi atau kelas belum lengkap. Hubungi administrator.",
+            );
+            return;
+          }
+
+          currentSession = {
+            id: snapshot.id,
+            ...session,
+          };
+
+          // Informasi mata kuliah
+          document.getElementById("courseName").textContent =
+            session.courseName;
+
+          document.getElementById("courseCode").textContent =
+            session.courseCode;
+
+          // Informasi kelas
+          document.getElementById("className").textContent = session.className;
+
+          document.getElementById("lecturerName").textContent = session.lecturer
+            ? "Dosen: " + session.lecturer
+            : "";
+
+          document.getElementById("meetingNumber").textContent =
+            "Pertemuan " + session.meeting;
+
+          document.getElementById("sessionDate").textContent = formatDate(
+            session.date,
+          );
+
+          document.getElementById("sessionTime").textContent =
+            `${session.startsAt.toDate().toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })} - ${session.expiresAt.toDate().toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}`;
+
+          loadingState.classList.add("hidden");
+          sessionContent.classList.remove("hidden");
+
+          console.log("Sesi absensi berhasil dimuat:", currentSession);
+        } catch (error) {
+          console.error("Load session error:", error);
+
+          showError(`Gagal memuat sesi: ${error.code || error.message}`);
+        }
+      }
+
+      // =====================================
+      // 11. CHECK STUDENT AND CLASS MEMBERSHIP
+      // =====================================
+
+      async function checkStudent() {
+        if (isChecking) return;
+
+        const nim = nimInput.value.trim();
+
+        currentStudent = null;
+        currentMembership = null;
+
+        submitButton.disabled = true;
+        studentInfo.classList.add("hidden");
+
+        hideMessage();
+
+        if (!nim) {
+          showMessage("Masukkan NIM terlebih dahulu.");
+          nimInput.focus();
+          return;
+        }
+
+        if (!currentSession || !currentSession.classId) {
+          showMessage("Informasi kelas pada sesi tidak tersedia.");
+          return;
+        }
+
+        isChecking = true;
+        checkButton.disabled = true;
+        checkButton.textContent = "Memeriksa...";
+
+        try {
+          // ---------------------------------
+          // A. Periksa data mahasiswa
+          // ---------------------------------
+
+          const studentRef = doc(db, "students", nim);
+          const studentSnapshot = await getDoc(studentRef);
+
+          if (!studentSnapshot.exists()) {
+            showMessage("NIM tidak ditemukan. Hubungi administrator.");
+            return;
+          }
+
+          const student = studentSnapshot.data();
+
+          if (student.nim && student.nim !== nim) {
+            showMessage("Data NIM tidak sesuai.");
+            return;
+          }
+
+          if (student.status && student.status !== "active") {
+            showMessage("Status mahasiswa tidak aktif. Hubungi administrator.");
+            return;
+          }
+
+          const studentName = student.name || "";
+
+          if (!studentName.trim()) {
+            showMessage("Data nama mahasiswa tidak lengkap.");
+            return;
+          }
+
+          // ---------------------------------
+          // B. Periksa keanggotaan kelas
+          // ---------------------------------
+
+          const membershipId = `${currentSession.classId}_${nim}`;
+
+          const membershipRef = doc(db, "classMembers", membershipId);
+
+          const membershipSnapshot = await getDoc(membershipRef);
+
+          if (!membershipSnapshot.exists()) {
+            showMessage(
+              "Anda tidak terdaftar sebagai anggota kelas " +
+                currentSession.className +
+                ". Absensi tidak dapat dilanjutkan.",
+            );
+            return;
+          }
+
+          const membership = membershipSnapshot.data();
+
+          // Pastikan data keanggotaan sesuai dengan sesi
+          if (
+            membership.classId !== currentSession.classId ||
+            membership.studentNim !== nim ||
+            membership.courseId !== currentSession.courseId
+          ) {
+            showMessage(
+              "Data keanggotaan kelas tidak sesuai dengan sesi absensi.",
+            );
+            return;
+          }
+
+          // ---------------------------------
+          // C. Simpan mahasiswa yang tervalidasi
+          // ---------------------------------
+
+          currentStudent = {
+            nim,
+            name: studentName.trim(),
+          };
+
+          currentMembership = {
+            classId: membership.classId,
+            className: membership.className,
+            courseId: membership.courseId,
+          };
+
+          document.getElementById("studentName").textContent =
+            currentStudent.name;
+
+          document.getElementById("studentNim").textContent =
+            "NIM: " + currentStudent.nim;
+
+          document.getElementById("studentClass").textContent =
+            "Kelas: " + currentSession.className;
+
+          studentInfo.classList.remove("hidden");
+
+          submitButton.disabled = false;
+
+          showMessage(
+            "NIM dan keanggotaan kelas berhasil diverifikasi. Silakan konfirmasi kehadiran.",
+            "success",
+          );
+
+          console.log("Mahasiswa ditemukan:", currentStudent);
+          console.log("Keanggotaan kelas:", currentMembership);
+        } catch (error) {
+          console.error("Check student error:", error);
+
+          if (error.code === "permission-denied") {
+            showMessage(
+              "Akses data mahasiswa atau keanggotaan kelas ditolak. Periksa Firestore Rules.",
+            );
+          } else {
+            showMessage(`Gagal memeriksa NIM: ${error.code || error.message}`);
+          }
+        } finally {
+          isChecking = false;
+          checkButton.disabled = false;
+          checkButton.textContent = "Periksa NIM";
+        }
+      }
+
+      checkButton.addEventListener("click", checkStudent);
+
+      // =====================================
+      // 12. INPUT CHANGE
+      // =====================================
+
+      nimInput.addEventListener("input", () => {
+        currentStudent = null;
+        currentMembership = null;
+
+        submitButton.disabled = true;
+
+        studentInfo.classList.add("hidden");
+
+        hideMessage();
+      });
+
+      // =====================================
+      // 13. SUBMIT ATTENDANCE
+      // =====================================
+
+      document
+        .getElementById("attendanceForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          if (isSubmitting) return;
+
+          if (!auth.currentUser) {
+            showMessage("Autentikasi mahasiswa tidak tersedia.");
+            return;
+          }
+
+          if (!currentSession || !currentStudent || !currentMembership) {
+            showMessage("Periksa NIM dan keanggotaan kelas terlebih dahulu.");
+            return;
+          }
+
+          if (!isSessionValid(currentSession)) {
+            showMessage("Sesi absensi sudah tidak aktif.");
+            submitButton.disabled = true;
+            return;
+          }
+
+          isSubmitting = true;
+
+          submitButton.disabled = true;
+          checkButton.disabled = true;
+          nimInput.disabled = true;
+
+          submitButton.textContent = "Menyimpan absensi...";
+
+          try {
+            // ---------------------------------
+            // A. ID dokumen absensi
+            // ---------------------------------
+
+            const attendanceId = `${sessionId}_${currentStudent.nim}`;
+
+            const attendanceRef = doc(db, "attendance", attendanceId);
+
+            // ---------------------------------
+            // B. Data absensi
+            // ---------------------------------
+
+            const attendanceData = {
+              sessionId: sessionId,
+
+              studentNim: currentStudent.nim,
+
+              studentName: currentStudent.name,
+
+              courseId: currentSession.courseId,
+
+              courseCode: currentSession.courseCode,
+
+              courseName: currentSession.courseName,
+
+              classId: currentMembership.classId,
+
+              className: currentMembership.className,
+
+              meetingNumber: currentSession.meeting,
+
+              date: currentSession.date,
+
+              status: "hadir",
+
+              token: token,
+
+              createdAt: serverTimestamp(),
+            };
+
+            console.log("Mengirim data absensi:", attendanceData);
+
+            console.log("Anonymous UID:", auth.currentUser.uid);
+
+            // ---------------------------------
+            // C. Simpan absensi
+            // ---------------------------------
+
+            await setDoc(attendanceRef, attendanceData);
+
+            console.log("Absensi berhasil disimpan.");
+
+            // ---------------------------------
+            // D. Tampilkan halaman sukses
+            // ---------------------------------
+
+            sessionContent.classList.add("hidden");
+
+            successState.classList.remove("hidden");
+
+            document.getElementById("successName").textContent =
+              currentStudent.name;
+
+            document.getElementById("successNim").textContent =
+              "NIM: " + currentStudent.nim;
+
+            document.getElementById("successCourse").textContent =
+              `${currentSession.courseName} - Pertemuan ${currentSession.meeting}`;
+
+            document.getElementById("successClass").textContent =
+              "Kelas: " + currentMembership.className;
+          } catch (error) {
+            console.error("Attendance error:", error);
+            console.error("Error code:", error.code);
+            console.error("Error message:", error.message);
+
+            if (error.code === "permission-denied") {
+              showMessage(
+                "Absensi ditolak oleh Firestore Rules. Periksa autentikasi, sesi, token, keanggotaan kelas, dan kemungkinan absensi sudah tercatat.",
+              );
+            } else if (error.code === "unavailable") {
+              showMessage("Server tidak tersedia. Periksa koneksi internet.");
+            } else {
+              showMessage(
+                `Gagal menyimpan absensi: ${error.code || error.message}`,
+              );
+            }
+          } finally {
+            isSubmitting = false;
+
+            submitButton.textContent = "Konfirmasi Kehadiran";
+
+            if (!sessionContent.classList.contains("hidden")) {
+              submitButton.disabled = !currentStudent || !currentMembership;
+
+              checkButton.disabled = false;
+              nimInput.disabled = false;
+            }
+          }
+        });
+
+      // =====================================
+      // 14. INITIALIZE
+      // =====================================
+
+      async function initialize() {
+        const authenticated = await initializeStudentAuth();
+
+        if (!authenticated) {
+          return;
+        }
+
+        await loadSession();
+      }
+
+      initialize();
+    </script>
+  </body>
+</html>
+  

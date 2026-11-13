@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <title>Absensi QR - Sistem Absensi Online</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 90px;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .hero-gradient {
+        background:
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(96, 165, 250, 0.16),
+            transparent 35%
+          ),
+          linear-gradient(135deg, #eff6ff 0%, #ffffff 55%, #dbeafe 100%);
+      }
+
+      .blue-gradient {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      }
+
+      .mobile-menu {
+        transition: all 0.3s ease;
+      }
+
+      .mobile-menu.hidden-menu {
+        display: none;
+      }
+
+      .feature-card {
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(37, 99, 235, 0.1);
+      }
+
+      @media (max-width: 640px) {
+        .hero-gradient {
+          background:
+            radial-gradient(
+              circle at 90% 30%,
+              rgba(96, 165, 250, 0.15),
+              transparent 40%
+            ),
+            linear-gradient(180deg, #eff6ff, #ffffff);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-white text-slate-800">
+    <!-- NAVBAR -->
+    <header
+      class="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-slate-100"
+    >
+      <nav
+        class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between"
+      >
+        <!-- LOGO -->
+        <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+          <div class="blue-gradient p-2.5 rounded-xl text-white">
+            <i data-lucide="qr-code" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+          </div>
+
+          <div>
+            <h1 class="font-bold text-base sm:text-lg text-slate-900">
+              Absensi<span class="text-blue-600">QR</span>
+            </h1>
+            <p class="text-[9px] sm:text-[10px] text-slate-500 tracking-wider">
+              SISTEM ABSENSI ONLINE
+            </p>
+          </div>
+        </a>
+
+        <!-- DESKTOP MENU -->
+        <div
+          class="hidden md:flex items-center gap-6 lg:gap-9 text-sm font-medium"
+        >
+          <a href="#beranda" class="hover:text-blue-600 transition">Beranda</a>
+          <a href="#tentang" class="hover:text-blue-600 transition">Tentang</a>
+          <a href="#fitur" class="hover:text-blue-600 transition">Fitur</a>
+        </div>
+
+        <!-- DESKTOP LOGIN -->
+        <a
+          href="login.html"
+          class="hidden md:inline-flex blue-gradient text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg transition"
+        >
+          Masuk
+        </a>
+
+        <!-- MOBILE BUTTON -->
+        <button
+          id="menuButton"
+          type="button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+          aria-controls="mobileMenu"
+          class="md:hidden p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50"
+        >
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </nav>
+
+      <!-- MOBILE MENU -->
+      <div
+        id="mobileMenu"
+        class="mobile-menu hidden-menu md:hidden bg-white border-t border-slate-100 shadow-lg"
+      >
+        <div class="px-5 py-5 flex flex-col gap-1">
+          <a
+            href="#beranda"
+            class="mobile-link px-4 py-3 rounded-xl text-sm font-medium hover:bg-blue-50 hover:text-blue-600"
+          >
+            Beranda
+          </a>
+
+          <a
+            href="#tentang"
+            class="mobile-link px-4 py-3 rounded-xl text-sm font-medium hover:bg-blue-50 hover:text-blue-600"
+          >
+            Tentang
+          </a>
+
+          <a
+            href="#fitur"
+            class="mobile-link px-4 py-3 rounded-xl text-sm font-medium hover:bg-blue-50 hover:text-blue-600"
+          >
+            Fitur
+          </a>
+
+          <a
+            href="login.html"
+            class="blue-gradient text-white text-center px-5 py-3.5 rounded-xl text-sm font-semibold mt-2"
+          >
+            Masuk ke Sistem
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section
+      id="beranda"
+      class="hero-gradient min-h-screen pt-28 sm:pt-32 pb-16 sm:pb-20 flex items-center"
+    >
+      <div class="max-w-8xl mx-auto w-full px-5 sm:px-6 lg:px-8">
+        <div
+          class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+        >
+          <!-- HERO TEXT -->
+          <div class="text-center lg:text-left">
+            <div
+              class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-[10px] sm:text-xs font-semibold mb-6"
+            >
+              <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+              SISTEM ABSENSI DIGITAL
+            </div>
+
+            <h2
+              class="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold leading-tight tracking-tight text-slate-900"
+            >
+              Absensi Lebih
+              <span class="text-blue-600">Mudah</span>, Cepat dan
+              <span class="text-blue-600">Modern.</span>
+            </h2>
+
+            <p
+              class="text-slate-500 leading-7 sm:leading-8 mt-5 sm:mt-6 max-w-xl mx-auto lg:mx-0 text-xs sm:text-sm md:text-base"
+            >
+              Sistem absensi mahasiswa berbasis QR Code yang memudahkan
+              pencatatan kehadiran perkuliahan secara otomatis, praktis, dan
+              terintegrasi.
+            </p>
+
+            <!-- BUTTON -->
+            <div
+              class="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 mt-8"
+            >
+              <a
+                href="login.html"
+                class="blue-gradient text-white px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-3 hover:shadow-xl transition"
+              >
+                Mulai Sekarang
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+              </a>
+
+              <a
+                href="#tentang"
+                class="bg-white border border-slate-200 text-slate-700 px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl font-semibold text-sm hover:border-blue-500 transition text-center"
+              >
+                Pelajari Lebih Lanjut
+              </a>
+            </div>
+
+            <!-- BENEFITS -->
+            <div
+              class="flex flex-wrap justify-center lg:justify-start gap-x-5 gap-y-3 mt-8 sm:mt-10 text-[11px] sm:text-xs text-slate-500"
+            >
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>
+                Praktis
+              </div>
+
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>
+                Real-time
+              </div>
+
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>
+                Responsif
+              </div>
+            </div>
+          </div>
+
+          <!-- HERO VISUAL -->
+          <div class="relative max-w-lg w-full mx-auto">
+            <div
+              class="absolute inset-0 bg-blue-300/30 blur-3xl rounded-full"
+            ></div>
+
+            <div
+              class="relative bg-white rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl shadow-blue-100 p-5 sm:p-8 md:p-10 border border-blue-50"
+            >
+              <div class="flex items-center justify-between mb-6 sm:mb-8">
+                <div>
+                  <p class="text-[10px] sm:text-xs text-slate-400">
+                    Sistem Kehadiran
+                  </p>
+                  <h3 class="font-bold text-lg sm:text-xl mt-1">
+                    Scan QR Code
+                  </h3>
+                </div>
+
+                <div class="bg-blue-50 text-blue-600 p-3 rounded-xl">
+                  <i
+                    data-lucide="scan-qr-code"
+                    class="w-6 h-6 sm:w-7 sm:h-7"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- QR DECORATION -->
+              <div class="flex justify-center py-3 sm:py-5">
+                <div
+                  class="bg-white border-2 border-dashed border-blue-200 rounded-2xl p-5 sm:p-7"
+                >
+                  <div
+                    class="grid grid-cols-7 gap-1 sm:gap-1.5 w-40 h-40 sm:w-48 sm:h-48"
+                  >
+                    <div class="col-span-3 grid grid-cols-3 gap-1">
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                    </div>
+
+                    <div class="col-span-4 grid grid-cols-4 gap-1">
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                    </div>
+
+                    <div class="col-span-7 grid grid-cols-7 grid-rows-3 gap-1">
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-slate-900"></div>
+                      <div class="bg-white"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STATUS -->
+              <div
+                class="bg-blue-50 rounded-xl p-3 sm:p-4 flex items-center gap-3"
+              >
+                <div class="bg-blue-600 text-white p-2 rounded-lg shrink-0">
+                  <i data-lucide="check" class="w-5 h-5"></i>
+                </div>
+
+                <div class="min-w-0">
+                  <p class="text-xs sm:text-sm font-semibold text-slate-800">
+                    Kehadiran Tercatat
+                  </p>
+                  <p class="text-[10px] sm:text-xs text-slate-500">
+                    Proses absensi secara otomatis
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TENTANG -->
+    <section id="tentang" class="py-16 sm:py-20 lg:py-24 bg-white">
+      <div class="max-w-8xl mx-auto px-5 sm:px-6 text-center">
+        <span
+          class="text-blue-600 font-semibold text-[10px] sm:text-xs tracking-widest"
+        >
+          TENTANG SISTEM
+        </span>
+
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mt-4"
+        >
+          Mengenal Absensi QR
+        </h2>
+
+        <p
+          class="text-slate-500 text-xs sm:text-sm leading-7 sm:leading-8 max-w-2xl mx-auto mt-5"
+        >
+          Absensi QR merupakan sistem pencatatan kehadiran mahasiswa menggunakan
+          teknologi QR Code untuk membantu proses absensi perkuliahan menjadi
+          lebih efektif dan efisien.
+        </p>
+      </div>
+    </section>
+
+    <!-- FITUR -->
+    <section id="fitur" class="py-16 sm:py-20 lg:py-24 bg-slate-50">
+      <div class="max-w-8xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div class="text-center mb-10 sm:mb-14">
+          <span
+            class="text-blue-600 font-semibold text-[10px] sm:text-xs tracking-widest"
+          >
+            FITUR UTAMA
+          </span>
+
+          <h2
+            class="text-2xl sm:text-3xl md:text-4xl font-bold mt-4 text-slate-900"
+          >
+            Kemudahan dalam Satu Sistem
+          </h2>
+
+          <p class="text-xs sm:text-sm text-slate-500 mt-4">
+            Mendukung pengelolaan kehadiran mahasiswa secara digital.
+          </p>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+        >
+          <!-- CARD 1 -->
+          <div
+            class="feature-card bg-white p-6 sm:p-8 rounded-2xl border border-slate-100"
+          >
+            <div class="bg-blue-50 text-blue-600 p-3 sm:p-4 rounded-xl w-fit">
+              <i data-lucide="qr-code" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+            </div>
+
+            <h3 class="font-bold text-base sm:text-lg mt-5 sm:mt-6">
+              Scan QR Code
+            </h3>
+
+            <p class="text-xs sm:text-sm text-slate-500 leading-7 mt-3">
+              Mahasiswa dapat melakukan absensi dengan memindai QR Code
+              menggunakan smartphone.
+            </p>
+          </div>
+
+          <!-- CARD 2 -->
+          <div
+            class="feature-card bg-white p-6 sm:p-8 rounded-2xl border border-slate-100"
+          >
+            <div class="bg-blue-50 text-blue-600 p-3 sm:p-4 rounded-xl w-fit">
+              <i data-lucide="database" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+            </div>
+
+            <h3 class="font-bold text-base sm:text-lg mt-5 sm:mt-6">
+              Data Terintegrasi
+            </h3>
+
+            <p class="text-xs sm:text-sm text-slate-500 leading-7 mt-3">
+              Data kehadiran tersimpan secara terpusat menggunakan database
+              online.
+            </p>
+          </div>
+
+          <!-- CARD 3 -->
+          <div
+            class="feature-card bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 sm:col-span-2 lg:col-span-1"
+          >
+            <div class="bg-blue-50 text-blue-600 p-3 sm:p-4 rounded-xl w-fit">
+              <i
+                data-lucide="chart-no-axes-combined"
+                class="w-6 h-6 sm:w-7 sm:h-7"
+              ></i>
+            </div>
+
+            <h3 class="font-bold text-base sm:text-lg mt-5 sm:mt-6">
+              Laporan Kehadiran
+            </h3>
+
+            <p class="text-xs sm:text-sm text-slate-500 leading-7 mt-3">
+              Admin dapat memantau dan melihat rekap kehadiran mahasiswa.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 sm:py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-5 sm:px-6">
+        <div
+          class="blue-gradient rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 text-center text-white"
+        >
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            Mulai Absensi Digital Sekarang
+          </h2>
+
+          <p
+            class="text-blue-100 text-xs sm:text-sm leading-7 mt-5 max-w-xl mx-auto"
+          >
+            Nikmati kemudahan pencatatan kehadiran mahasiswa dengan teknologi QR
+            Code.
+          </p>
+
+          <a
+            href="login.html"
+            class="inline-flex items-center justify-center gap-3 mt-7 sm:mt-8 bg-white text-blue-700 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm hover:bg-blue-50 transition"
+          >
+            Masuk ke Sistem
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-white py-8 sm:py-10">
+      <div class="max-w-8xl mx-auto px-5 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-center gap-5"
+        >
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-lg">
+              <i data-lucide="qr-code" class="w-5 h-5"></i>
+            </div>
+
+            <span class="font-bold text-sm sm:text-base">
+              Absensi<span class="text-blue-400">QR</span>
+            </span>
+          </div>
+
+          <p class="text-[10px] sm:text-xs text-slate-400 text-center">
+            © 2026 Laboratorium Teknik Informatika.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+      lucide.createIcons();
+
+      const menuButton = document.getElementById("menuButton");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      menuButton.addEventListener("click", function () {
+        const isHidden = mobileMenu.classList.toggle("hidden-menu");
+
+        menuButton.setAttribute("aria-expanded", String(!isHidden));
+
+        menuButton.innerHTML = isHidden
+          ? '<i data-lucide="menu" class="w-6 h-6"></i>'
+          : '<i data-lucide="x" class="w-6 h-6"></i>';
+
+        lucide.createIcons();
+      });
+
+      document.querySelectorAll(".mobile-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden-menu");
+          menuButton.setAttribute("aria-expanded", "false");
+          menuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+
+          lucide.createIcons();
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) {
+          mobileMenu.classList.add("hidden-menu");
+          menuButton.setAttribute("aria-expanded", "false");
+          menuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+
+          lucide.createIcons();
+        }
+      });
+    </script>
+  </body>
+</html>
