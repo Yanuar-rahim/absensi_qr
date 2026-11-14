@@ -16,7 +16,8 @@ import {
 const params = new URLSearchParams(window.location.search);
 
 const sessionId = params.get("sessionId");
-const token = params.get("token");
+// Token dinamis dari QR (parameter "t")
+const dynamicToken = params.get("t");
 
 // =====================================
 // 2. ELEMENTS
@@ -45,11 +46,13 @@ let currentSession = null;
 let currentStudent = null;
 let currentMembership = null;
 
+// Data token QR dinamis yang sudah divalidasi saat halaman dimuat
+let currentToken = null;
+
 let isSubmitting = false;
 let isChecking = false;
 
-// Cache hasil verifikasi NIM.
-// Cache hanya berlaku selama halaman masih terbuka.
+// Cache hasil verifikasi NIM (hanya selama halaman terbuka)
 let verifiedNim = null;
 
 // =====================================
@@ -104,10 +107,6 @@ async function initializeStudentAuth() {
       throw new Error("Firebase Authentication tidak menghasilkan user.");
     }
 
-    console.log("Autentikasi mahasiswa berhasil.");
-    console.log("Anonymous UID:", auth.currentUser.uid);
-    console.log("Firebase Project:", db.app.options.projectId);
-
     return true;
   } catch (error) {
     console.error("Authentication error:", error);
@@ -126,7 +125,7 @@ async function initializeStudentAuth() {
 }
 
 // =====================================
-// 7. SESSION VALIDATION
+// 7. VALIDATION
 // =====================================
 
 function isSessionValid(session) {
@@ -142,6 +141,12 @@ function isSessionValid(session) {
   return (
     Number.isFinite(start) && Number.isFinite(end) && now >= start && now <= end
   );
+}
+
+function isTokenValid(tokenData) {
+  const expires = tokenData?.expiresAt?.toDate?.().getTime();
+
+  return Number.isFinite(expires) && Date.now() <= expires;
 }
 
 // =====================================
@@ -168,11 +173,11 @@ function formatTime(timestamp) {
 }
 
 // =====================================
-// 9. LOAD SESSION
+// 9. LOAD SESSION + VALIDASI TOKEN DINAMIS
 // =====================================
 
 async function loadSession() {
-  if (!sessionId || !token) {
+  if (!sessionId || !dynamicToken) {
     showError("QR Code tidak memiliki informasi sesi yang lengkap.");
     return;
   }
@@ -180,21 +185,37 @@ async function loadSession() {
   try {
     loadingText.textContent = "Memeriksa sesi absensi...";
 
-    // Satu pembacaan dokumen sesi.
-    const sessionRef = doc(db, "sessions", sessionId);
-    const snapshot = await getDoc(sessionRef);
+    // A. Baca dokumen token dinamis dan dokumen sesi secara paralel
+    const [tokenSnapshot, sessionSnapshot] = await Promise.all([
+      getDoc(doc(db, "sessions", sessionId, "qrTokens", dynamicToken)),
+      getDoc(doc(db, "sessions", sessionId)),
+    ]);
 
-    if (!snapshot.exists()) {
+    // B. Validasi token dinamis
+    if (!tokenSnapshot.exists()) {
+      showError("QR Code tidak valid. Pindai ulang QR Code dari layar dosen.");
+      return;
+    }
+
+    const tokenData = tokenSnapshot.data();
+
+    if (tokenData.sessionId !== sessionId || tokenData.token !== dynamicToken) {
+      showError("QR Code tidak sesuai dengan sesi absensi.");
+      return;
+    }
+
+    if (!isTokenValid(tokenData)) {
+      showError("QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru.");
+      return;
+    }
+
+    // C. Validasi sesi
+    if (!sessionSnapshot.exists()) {
       showError("Sesi absensi tidak ditemukan.");
       return;
     }
 
-    const session = snapshot.data();
-
-    if (!session.token || session.token !== token) {
-      showError("Token QR Code tidak valid.");
-      return;
-    }
+    const session = sessionSnapshot.data();
 
     if (!isSessionValid(session)) {
       showError("Sesi belum dimulai, sudah berakhir, atau telah ditutup.");
@@ -216,22 +237,23 @@ async function loadSession() {
       return;
     }
 
+    currentToken = tokenData;
+
     currentSession = {
-      id: snapshot.id,
+      id: sessionSnapshot.id,
       ...session,
     };
 
     $("courseName").textContent = session.courseName;
     $("courseCode").textContent = session.courseCode;
-
     $("className").textContent = session.className;
 
-    $("lecturerName").textContent = session.lecturer
-      ? "Dosen: " + session.lecturer
+    // Field di halaman admin bernama lecturerName
+    $("lecturerName").textContent = session.lecturerName
+      ? "Dosen: " + session.lecturerName
       : "";
 
     $("meetingNumber").textContent = "Pertemuan " + session.meeting;
-
     $("sessionDate").textContent = formatDate(session.date);
 
     $("sessionTime").textContent =
@@ -239,12 +261,14 @@ async function loadSession() {
 
     loadingState.classList.add("hidden");
     sessionContent.classList.remove("hidden");
-
-    console.log("Sesi berhasil dimuat:", sessionId);
   } catch (error) {
     console.error("Load session error:", error);
 
-    showError(`Gagal memuat sesi: ${error.code || error.message}`);
+    if (error.code === "permission-denied") {
+      showError("Akses ditolak. QR Code tidak valid atau sudah kedaluwarsa.");
+    } else {
+      showError(`Gagal memuat sesi: ${error.code || error.message}`);
+    }
   }
 }
 
@@ -295,10 +319,13 @@ async function checkStudent() {
     return;
   }
 
-  // ===================================
-  // CACHE: NIM SUDAH DIVERIFIKASI
-  // ===================================
+  if (!isTokenValid(currentToken)) {
+    resetVerification();
+    showMessage("QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru.");
+    return;
+  }
 
+  // Cache: NIM sudah diverifikasi
   if (verifiedNim === nim && currentStudent && currentMembership) {
     studentInfo.classList.remove("hidden");
     submitButton.disabled = false;
@@ -319,12 +346,8 @@ async function checkStudent() {
   submitButton.disabled = true;
 
   try {
-    // =================================
-    // A. BACA DOKUMEN MAHASISWA
-    // =================================
-
-    const studentRef = doc(db, "students", nim);
-    const studentSnapshot = await getDoc(studentRef);
+    // A. Dokumen mahasiswa
+    const studentSnapshot = await getDoc(doc(db, "students", nim));
 
     if (!studentSnapshot.exists()) {
       resetVerification();
@@ -354,15 +377,10 @@ async function checkStudent() {
       return;
     }
 
-    // =================================
-    // B. BACA DOKUMEN KEANGGOTAAN KELAS
-    // =================================
-
-    const membershipId = `${currentSession.classId}_${nim}`;
-
-    const membershipRef = doc(db, "classMembers", membershipId);
-
-    const membershipSnapshot = await getDoc(membershipRef);
+    // B. Dokumen keanggotaan kelas
+    const membershipSnapshot = await getDoc(
+      doc(db, "classMembers", `${currentSession.classId}_${nim}`),
+    );
 
     if (!membershipSnapshot.exists()) {
       resetVerification();
@@ -384,20 +402,12 @@ async function checkStudent() {
       membership.courseId !== currentSession.courseId
     ) {
       resetVerification();
-
       showMessage("Data keanggotaan kelas tidak sesuai.");
-
       return;
     }
 
-    // =================================
-    // C. SIMPAN HASIL VERIFIKASI
-    // =================================
-
-    currentStudent = {
-      nim,
-      name: studentName,
-    };
+    // C. Simpan hasil verifikasi
+    currentStudent = { nim, name: studentName };
 
     currentMembership = {
       classId: membership.classId,
@@ -409,7 +419,6 @@ async function checkStudent() {
 
     $("studentName").textContent = studentName;
     $("studentNim").textContent = "NIM: " + nim;
-
     $("studentClass").textContent = "Kelas: " + currentSession.className;
 
     studentInfo.classList.remove("hidden");
@@ -420,8 +429,6 @@ async function checkStudent() {
       "NIM dan keanggotaan kelas berhasil diverifikasi. Silakan konfirmasi kehadiran.",
       "success",
     );
-
-    console.log("Verifikasi mahasiswa berhasil:", nim);
   } catch (error) {
     console.error("Check student error:", error);
 
@@ -485,6 +492,15 @@ $("attendanceForm").addEventListener("submit", async (event) => {
     return;
   }
 
+  // Token dinamis harus masih berlaku saat absensi dikirim
+  if (!isTokenValid(currentToken)) {
+    submitButton.disabled = true;
+    showMessage(
+      "QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru untuk absen.",
+    );
+    return;
+  }
+
   isSubmitting = true;
 
   submitButton.disabled = true;
@@ -494,20 +510,14 @@ $("attendanceForm").addEventListener("submit", async (event) => {
   submitButton.textContent = "Menyimpan absensi...";
 
   try {
-    // =================================
-    // A. ID DOKUMEN ABSENSI
-    // =================================
-
-    const attendanceId = `${sessionId}_${currentStudent.nim}`;
-
-    const attendanceRef = doc(db, "attendance", attendanceId);
-
-    // =================================
-    // B. DATA ABSENSI
-    // =================================
+    const attendanceRef = doc(
+      db,
+      "attendance",
+      `${sessionId}_${currentStudent.nim}`,
+    );
 
     const attendanceData = {
-      sessionId: sessionId,
+      sessionId,
 
       studentNim: currentStudent.nim,
       studentName: currentStudent.name,
@@ -524,29 +534,18 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
       status: "hadir",
 
-      token: token,
+      // Token dinamis yang dipindai; dipakai Firestore Rules untuk validasi
+      qrToken: dynamicToken,
 
       createdAt: serverTimestamp(),
     };
 
-    // =================================
-    // C. SIMPAN ABSENSI
-    // =================================
-
     await setDoc(attendanceRef, attendanceData);
 
-    console.log("Absensi berhasil disimpan.");
-
-    // =================================
-    // D. TAMPILKAN SUKSES
-    // =================================
-
     sessionContent.classList.add("hidden");
-
     successState.classList.remove("hidden");
 
     $("successName").textContent = currentStudent.name;
-
     $("successNim").textContent = "NIM: " + currentStudent.nim;
 
     $("successCourse").textContent =
@@ -558,7 +557,7 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
     if (error.code === "permission-denied") {
       showMessage(
-        "Absensi ditolak oleh Firestore Rules. Periksa autentikasi, token, sesi, dan aturan penyimpanan absensi.",
+        "Absensi ditolak. QR Code mungkin sudah kedaluwarsa, sesi sudah ditutup, atau Anda sudah absen. Pindai ulang QR Code terbaru.",
       );
     } else if (error.code === "unavailable") {
       showMessage("Server tidak tersedia. Periksa koneksi internet.");
@@ -578,7 +577,10 @@ $("attendanceForm").addEventListener("submit", async (event) => {
     checkButton.disabled = false;
 
     submitButton.disabled =
-      !currentStudent || !currentMembership || !isSessionValid(currentSession);
+      !currentStudent ||
+      !currentMembership ||
+      !isSessionValid(currentSession) ||
+      !isTokenValid(currentToken);
   }
 });
 
