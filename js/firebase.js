@@ -10,12 +10,12 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase
 
 // Konfigurasi Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBMva1IHop4D_zF3NmNxHGNHk_nLEyuvPk",
-  authDomain: "absensi-qr-online-dde8c.firebaseapp.com",
-  projectId: "absensi-qr-online-dde8c",
-  storageBucket: "absensi-qr-online-dde8c.firebasestorage.app",
-  messagingSenderId: "120675745126",
-  appId: "1:120675745126:web:d2cb5865bcef253be3dca7",
+  apiKey: "null",
+  authDomain: "null",
+  projectId: "null",
+  storageBucket: "null",
+  messagingSenderId: "null",
+  appId: "null",
 };
 
 // Inisialisasi Firebase
