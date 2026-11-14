@@ -73,7 +73,6 @@
       id="sidebar"
       class="sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white"
     >
-      <!-- Logo -->
       <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
         <div
           class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white"
@@ -367,7 +366,6 @@
               </div>
 
               <h4 class="font-semibold text-slate-800">Data Mahasiswa</h4>
-
               <p class="mt-2 text-xs leading-relaxed text-slate-400">
                 Kelola data mahasiswa dan NIM.
               </p>
@@ -391,7 +389,6 @@
               </div>
 
               <h4 class="font-semibold text-slate-800">Mata Kuliah</h4>
-
               <p class="mt-2 text-xs leading-relaxed text-slate-400">
                 Kelola daftar mata kuliah.
               </p>
@@ -415,7 +412,6 @@
               </div>
 
               <h4 class="font-semibold text-slate-800">Sesi Absensi</h4>
-
               <p class="mt-2 text-xs leading-relaxed text-slate-400">
                 Buat sesi dan QR Code absensi.
               </p>
@@ -439,7 +435,6 @@
               </div>
 
               <h4 class="font-semibold text-slate-800">Laporan Absensi</h4>
-
               <p class="mt-2 text-xs leading-relaxed text-slate-400">
                 Lihat dan rekap data kehadiran.
               </p>
@@ -465,12 +460,10 @@
 
             <div>
               <h4 class="font-semibold text-slate-800">Informasi Sistem</h4>
-
               <p class="mt-1 text-sm leading-relaxed text-slate-600">
-                Dashboard administrator telah terhubung dengan Firebase
-                Authentication. Statistik akan menampilkan data sebenarnya
-                setelah koleksi dan aturan akses Firestore untuk setiap fitur
-                selesai dikonfigurasi.
+                Dashboard administrator terhubung dengan Firebase Authentication
+                dan Cloud Firestore. Statistik menampilkan jumlah data yang
+                tersimpan pada sistem.
               </p>
             </div>
           </div>
@@ -485,251 +478,8 @@
       </section>
     </main>
 
-    <!-- Firebase Authentication & Firestore -->
-    <script type="module">
-      import { auth, db, authPersistence } from "./js/firebase.js";
-
-      import {
-        onAuthStateChanged,
-        signOut,
-      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-
-      import {
-        doc,
-        getDoc,
-        collection,
-        getCountFromServer,
-        query,
-        where,
-      } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-
-      // =====================================
-      // ELEMENT
-      // =====================================
-
-      const welcomeName = document.getElementById("welcomeName");
-      const adminNameTop = document.getElementById("adminNameTop");
-      const logoutButton = document.getElementById("logoutButton");
-
-      const totalStudents = document.getElementById("totalStudents");
-      const totalCourses = document.getElementById("totalCourses");
-      const totalSessions = document.getElementById("totalSessions");
-      const totalAttendanceToday = document.getElementById(
-        "totalAttendanceToday",
-      );
-
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("overlay");
-      const openSidebar = document.getElementById("openSidebar");
-      const closeSidebar = document.getElementById("closeSidebar");
-
-      // =====================================
-      // FORMAT ANGKA
-      // =====================================
-
-      function formatNumber(number) {
-        return Number(number).toLocaleString("id-ID");
-      }
-
-      // =====================================
-      // TANGGAL HARI INI
-      // Menggunakan tanggal lokal browser
-      // Format: YYYY-MM-DD
-      // =====================================
-
-      function getTodayDate() {
-        const now = new Date();
-
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-      }
-
-      // =====================================
-      // MEMUAT STATISTIK FIRESTORE
-      // =====================================
-
-      async function loadDashboardStatistics() {
-        const statisticElements = [
-          totalStudents,
-          totalCourses,
-          totalSessions,
-          totalAttendanceToday,
-        ];
-
-        statisticElements.forEach((element) => {
-          element.textContent = "Memuat...";
-        });
-
-        const today = getTodayDate();
-
-        const statistics = [
-          {
-            element: totalStudents,
-            name: "Total mahasiswa",
-            request: getCountFromServer(collection(db, "students")),
-          },
-          {
-            element: totalCourses,
-            name: "Total mata kuliah",
-            request: getCountFromServer(collection(db, "courses")),
-          },
-          {
-            element: totalSessions,
-            name: "Total sesi absensi",
-            request: getCountFromServer(collection(db, "sessions")),
-          },
-          {
-            element: totalAttendanceToday,
-            name: "Kehadiran hari ini",
-            request: getCountFromServer(
-              query(collection(db, "attendance"), where("date", "==", today)),
-            ),
-          },
-        ];
-
-        // Memuat seluruh statistik secara bersamaan.
-        // Jika satu statistik gagal, statistik lainnya tetap ditampilkan.
-        const results = await Promise.allSettled(
-          statistics.map((item) => item.request),
-        );
-
-        results.forEach((result, index) => {
-          const item = statistics[index];
-
-          if (result.status === "fulfilled") {
-            const count = result.value.data().count;
-
-            item.element.textContent = formatNumber(count);
-
-            console.log(`${item.name}:`, count);
-          } else {
-            item.element.textContent = "--";
-
-            console.error(`Gagal memuat ${item.name}:`, result.reason);
-          }
-        });
-      }
-
-      // =====================================
-      // SIDEBAR MOBILE
-      // =====================================
-
-      function showSidebar() {
-        sidebar.classList.add("show");
-        overlay.classList.remove("hidden");
-      }
-
-      function hideSidebar() {
-        sidebar.classList.remove("show");
-        overlay.classList.add("hidden");
-      }
-
-      openSidebar.addEventListener("click", showSidebar);
-      closeSidebar.addEventListener("click", hideSidebar);
-      overlay.addEventListener("click", hideSidebar);
-
-      // =====================================
-      // AUTHENTICATION CHECK
-      // =====================================
-
-      async function initializeDashboard() {
-        try {
-          await authPersistence;
-        } catch (error) {
-          console.error("Persistence error:", error);
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-          if (!user) {
-            window.location.replace("login.html");
-            return;
-          }
-
-          try {
-            // Mengambil data administrator
-            const adminRef = doc(db, "admins", user.uid);
-            const adminSnapshot = await getDoc(adminRef);
-
-            if (!adminSnapshot.exists()) {
-              await signOut(auth);
-
-              alert("Akun administrator tidak terdaftar.");
-
-              window.location.replace("login.html");
-              return;
-            }
-
-            const adminData = adminSnapshot.data();
-
-            // Validasi role dan status administrator
-            if (adminData.role !== "admin" || adminData.status !== "active") {
-              await signOut(auth);
-
-              alert("Akses administrator tidak diizinkan.");
-
-              window.location.replace("login.html");
-              return;
-            }
-
-            // Menampilkan nama administrator
-            const displayName = adminData.name || "Administrator";
-
-            welcomeName.textContent = displayName;
-            adminNameTop.textContent = displayName;
-
-            // Memuat statistik setelah administrator terverifikasi
-            await loadDashboardStatistics();
-          } catch (error) {
-            console.error("Dashboard error:", error);
-
-            if (error.code === "permission-denied") {
-              alert(
-                "Tidak dapat membaca data administrator. Periksa Firestore Rules.",
-              );
-            } else {
-              alert("Terjadi kesalahan saat memuat dashboard.");
-            }
-
-            // Jangan logout otomatis jika hanya pengambilan statistik
-            // yang mengalami kegagalan.
-            if (
-              error.code === "permission-denied" &&
-              !welcomeName.textContent.includes("Administrator")
-            ) {
-              await signOut(auth);
-              window.location.replace("login.html");
-            }
-          }
-        });
-      }
-
-      // =====================================
-      // LOGOUT
-      // =====================================
-
-      logoutButton.addEventListener("click", async () => {
-        const confirmation = confirm("Apakah kamu yakin ingin keluar?");
-
-        if (!confirmation) return;
-
-        try {
-          await signOut(auth);
-          window.location.replace("login.html");
-        } catch (error) {
-          console.error("Logout error:", error);
-          alert("Gagal keluar dari akun.");
-        }
-      });
-
-      // =====================================
-      // START
-      // =====================================
-
-      initializeDashboard();
-    </script>
+    <!-- File JavaScript Dashboard -->
+    <script type="module" src="./js/dashboard.js"></script>
 
     <script>
       lucide.createIcons();
