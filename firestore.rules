@@ -1,0 +1,300 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // 1. FUNGSI BANTU
+    // ==========================================
+    function isAdmin() {
+      return request.auth != null
+        && exists(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        )
+        && get(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        ).data.role == "admin"
+        && get(
+          /databases/$(database)/documents/admins/$(request.auth.uid)
+        ).data.status == "active";
+    }
+
+    // Sesi aktif dan masih dalam rentang waktu berlaku
+    function isSessionOpen(s) {
+      return s.status == "active"
+        && request.time >= s.startsAt
+        && request.time <= s.expiresAt;
+    }
+
+    // Token QR dinamis harus ada, milik sesi tersebut, dan belum kedaluwarsa
+    function isQrTokenValid(sessionId, qrToken) {
+      let tokenPath = /databases/$(database)/documents/sessions/$(sessionId)/qrTokens/$(qrToken);
+
+      return exists(tokenPath)
+        && get(tokenPath).data.sessionId == sessionId
+        && get(tokenPath).data.token == qrToken
+        && get(tokenPath).data.expiresAt >= request.time;
+    }
+
+    // Validasi seluruh data absensi yang dikirim mahasiswa
+    function isValidAttendance(attendanceId, d) {
+      let sessionPath = /databases/$(database)/documents/sessions/$(d.sessionId);
+      let studentPath = /databases/$(database)/documents/students/$(d.studentNim);
+      let memberPath = /databases/$(database)/documents/classMembers/$(d.classId + "_" + d.studentNim);
+      let lockPath = /databases/$(database)/documents/sessions/$(d.sessionId)/deviceLocks/$(request.auth.uid);
+
+      return
+        // ID absensi
+        attendanceId == d.sessionId + "_" + d.studentNim
+
+        // Mahasiswa
+        && exists(studentPath)
+        && get(studentPath).data.name == d.studentName
+        && get(studentPath).data.get("status", "active") == "active"
+
+        // Sesi dan token QR dinamis
+        && exists(sessionPath)
+        && isSessionOpen(get(sessionPath).data)
+        && isQrTokenValid(d.sessionId, d.qrToken)
+
+        // Mata kuliah dan kelas harus sama dengan sesi
+        && d.courseId == get(sessionPath).data.courseId
+        && d.courseCode == get(sessionPath).data.courseCode
+        && d.courseName == get(sessionPath).data.courseName
+        && d.classId == get(sessionPath).data.classId
+        && d.className == get(sessionPath).data.className
+        && d.meetingNumber == get(sessionPath).data.meeting
+        && d.date == get(sessionPath).data.date
+
+        // Anggota kelas
+        && exists(memberPath)
+        && get(memberPath).data.classId == d.classId
+        && get(memberPath).data.studentNim == d.studentNim
+        && get(memberPath).data.courseId == d.courseId
+        && get(memberPath).data.className == d.className
+
+        // Satu perangkat (UID) hanya boleh absen satu kali per sesi.
+        // Kunci perangkat harus dibuat dalam batch yang sama.
+        && !exists(lockPath)
+        && existsAfter(lockPath)
+        && getAfter(lockPath).data.studentNim == d.studentNim
+        && getAfter(lockPath).data.sessionId == d.sessionId
+
+        // Status dan waktu
+        && d.status == "hadir"
+        && d.createdAt == request.time;
+    }
+
+    // ==========================================
+    // 2. DATA ADMINISTRATOR
+    // ==========================================
+    match /admins/{adminId} {
+      allow get: if request.auth != null
+        && request.auth.uid == adminId;
+
+      allow list: if false;
+
+      allow create, update, delete: if false;
+    }
+
+    // ==========================================
+    // 3. DATA MAHASISWA
+    // ==========================================
+    match /students/{studentId} {
+      // Mahasiswa dapat memeriksa data berdasarkan NIM
+      allow get: if request.auth != null;
+
+      // Daftar mahasiswa hanya untuk admin
+      allow list: if isAdmin();
+
+      // Pengelolaan data hanya untuk admin
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 4. DATA MATA KULIAH
+    // ==========================================
+    match /courses/{courseId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 5. DATA PENGELOMPOKAN KELAS
+    // ==========================================
+    match /courseClasses/{classId} {
+      allow get, list: if isAdmin();
+
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 6. DATA ANGGOTA KELAS
+    // ==========================================
+    match /classMembers/{memberId} {
+      // Mahasiswa anonim hanya dapat get dokumen tertentu
+      allow get: if isAdmin()
+        || request.auth != null;
+
+      // Daftar anggota hanya untuk admin
+      allow list: if isAdmin();
+
+      // Pengelolaan anggota hanya untuk admin
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 7. DATA SESI ABSENSI
+    // ==========================================
+    match /sessions/{sessionId} {
+
+      // Admin dapat membaca sesi.
+      // Mahasiswa hanya dapat membaca sesi aktif
+      // selama masih dalam waktu berlaku.
+      allow get: if isAdmin()
+        || (
+          request.auth != null
+          && isSessionOpen(resource.data)
+        );
+
+      // Daftar sesi hanya untuk admin
+      allow list: if isAdmin();
+
+      // Pengelolaan sesi hanya untuk admin
+      allow create, update, delete: if isAdmin();
+
+      // ----------------------------------------
+      // 7a. TOKEN QR DINAMIS
+      // ----------------------------------------
+      match /qrTokens/{qrToken} {
+
+        // Mahasiswa hanya dapat get token yang belum kedaluwarsa.
+        // Token acak 128-bit tidak dapat ditebak.
+        allow get: if isAdmin()
+          || (
+            request.auth != null
+            && resource.data.expiresAt >= request.time
+          );
+
+        // Tidak ada yang boleh melihat daftar token.
+        allow list: if false;
+
+        // Hanya admin yang membuat token, dengan masa berlaku wajar.
+        allow create: if isAdmin()
+          && request.resource.data.keys().hasOnly([
+            "token",
+            "sessionId",
+            "createdAt",
+            "expiresAt",
+            "createdBy"
+          ])
+          && request.resource.data.token == qrToken
+          && request.resource.data.sessionId == sessionId
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.expiresAt > request.time
+          && request.resource.data.expiresAt <= request.time + duration.value(5, "m");
+
+        // Token tidak boleh diubah, hanya dihapus.
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+
+      // ----------------------------------------
+      // 7b. KUNCI PERANGKAT (1 PERANGKAT = 1 ABSENSI PER SESI)
+      // ----------------------------------------
+      match /deviceLocks/{deviceUid} {
+
+        // Mahasiswa hanya dapat membaca kunci miliknya sendiri.
+        allow get: if isAdmin()
+          || (request.auth != null && request.auth.uid == deviceUid);
+
+        allow list: if isAdmin();
+
+        // Kunci hanya dapat dibuat bersamaan dengan dokumen absensi.
+        // Karena dokumen ini tidak bisa di-update, perangkat yang sama
+        // tidak dapat membuat kunci kedua pada sesi yang sama.
+        allow create: if request.auth != null
+          && request.auth.uid == deviceUid
+          && request.resource.data.keys().hasAll([
+            "sessionId", "studentNim", "deviceUid", "createdAt"
+          ])
+          && request.resource.data.keys().hasOnly([
+            "sessionId", "studentNim", "deviceUid", "createdAt"
+          ])
+          && request.resource.data.sessionId == sessionId
+          && request.resource.data.deviceUid == deviceUid
+          && request.resource.data.createdAt == request.time
+          && existsAfter(
+            /databases/$(database)/documents/attendance/$(sessionId + "_" + request.resource.data.studentNim)
+          )
+          && getAfter(
+            /databases/$(database)/documents/attendance/$(sessionId + "_" + request.resource.data.studentNim)
+          ).data.sessionId == sessionId;
+
+        allow update: if false;
+
+        // Admin dapat mereset kunci (mis. HP mahasiswa rusak atau salah pinjam).
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ==========================================
+    // 8. DATA KEHADIRAN
+    // ==========================================
+    match /attendance/{attendanceId} {
+
+      // Hanya admin yang dapat membaca absensi
+      allow read: if isAdmin();
+
+      // Mahasiswa hanya dapat membuat absensi satu kali
+      allow create: if request.auth != null
+        && !exists(
+          /databases/$(database)/documents/attendance/$(attendanceId)
+        )
+
+        // Struktur data harus persis sesuai (tanpa field tambahan)
+        && request.resource.data.keys().hasAll([
+          "sessionId",
+          "studentNim",
+          "studentName",
+          "courseId",
+          "courseCode",
+          "courseName",
+          "classId",
+          "className",
+          "meetingNumber",
+          "date",
+          "status",
+          "qrToken",
+          "createdAt"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "sessionId",
+          "studentNim",
+          "studentName",
+          "courseId",
+          "courseCode",
+          "courseName",
+          "classId",
+          "className",
+          "meetingNumber",
+          "date",
+          "status",
+          "qrToken",
+          "createdAt"
+        ])
+
+        && isValidAttendance(attendanceId, request.resource.data);
+
+      // Update dan delete hanya untuk admin
+      allow update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 9. TOLAK AKSES KOLEKSI LAIN
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

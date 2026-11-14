@@ -5,7 +5,7 @@ import { signInAnonymously } from "https://www.gstatic.com/firebasejs/13.2.0/fir
 import {
   doc,
   getDoc,
-  setDoc,
+  writeBatch,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
@@ -186,9 +186,13 @@ async function loadSession() {
     loadingText.textContent = "Memeriksa sesi absensi...";
 
     // A. Baca dokumen token dinamis dan dokumen sesi secara paralel
-    const [tokenSnapshot, sessionSnapshot] = await Promise.all([
+    const [tokenSnapshot, sessionSnapshot, lockSnapshot] = await Promise.all([
       getDoc(doc(db, "sessions", sessionId, "qrTokens", dynamicToken)),
       getDoc(doc(db, "sessions", sessionId)),
+      // Kunci perangkat: 1 perangkat (UID anonim) hanya boleh absen 1 kali per sesi
+      getDoc(
+        doc(db, "sessions", sessionId, "deviceLocks", auth.currentUser.uid),
+      ),
     ]);
 
     // B. Validasi token dinamis
@@ -219,6 +223,18 @@ async function loadSession() {
 
     if (!isSessionValid(session)) {
       showError("Sesi belum dimulai, sudah berakhir, atau telah ditutup.");
+      return;
+    }
+
+    // D. Perangkat ini sudah dipakai absen pada sesi/pertemuan ini
+    if (lockSnapshot.exists()) {
+      const usedBy = lockSnapshot.data().studentNim;
+
+      showError(
+        "Perangkat ini sudah digunakan untuk absensi" +
+          (usedBy ? " (NIM " + usedBy + ")" : "") +
+          " pada pertemuan ini. Satu perangkat hanya dapat absen satu kali.",
+      );
       return;
     }
 
@@ -540,7 +556,27 @@ $("attendanceForm").addEventListener("submit", async (event) => {
       createdAt: serverTimestamp(),
     };
 
-    await setDoc(attendanceRef, attendanceData);
+    // Absensi dan kunci perangkat disimpan atomik dalam satu batch
+    const lockRef = doc(
+      db,
+      "sessions",
+      sessionId,
+      "deviceLocks",
+      auth.currentUser.uid,
+    );
+
+    const batch = writeBatch(db);
+
+    batch.set(attendanceRef, attendanceData);
+
+    batch.set(lockRef, {
+      sessionId,
+      studentNim: currentStudent.nim,
+      deviceUid: auth.currentUser.uid,
+      createdAt: serverTimestamp(),
+    });
+
+    await batch.commit();
 
     sessionContent.classList.add("hidden");
     successState.classList.remove("hidden");
@@ -557,7 +593,7 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
     if (error.code === "permission-denied") {
       showMessage(
-        "Absensi ditolak. QR Code mungkin sudah kedaluwarsa, sesi sudah ditutup, atau Anda sudah absen. Pindai ulang QR Code terbaru.",
+        "Absensi ditolak. Kemungkinan: QR Code kedaluwarsa, sesi sudah ditutup, NIM ini sudah absen, atau perangkat ini sudah dipakai absen pada pertemuan ini.",
       );
     } else if (error.code === "unavailable") {
       showMessage("Server tidak tersedia. Periksa koneksi internet.");
