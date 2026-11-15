@@ -197,7 +197,7 @@ async function loadSession() {
 
     // B. Validasi token dinamis
     if (!tokenSnapshot.exists()) {
-      showError("QR Code tidak valid. Pindai ulang QR Code dari layar dosen.");
+      showError("QR Code tidak valid. Pindai ulang QR Code.");
       return;
     }
 
