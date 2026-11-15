@@ -17,6 +17,7 @@ import {
   updateDoc,
   deleteDoc,
   writeBatch,
+  increment,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
@@ -91,8 +92,9 @@ onAuthStateChanged(auth, async (user) => {
 
 // ======================================================
 // INITIAL LOAD
-// Hanya membaca courses, courseClasses, dan agregasi
-// jumlah classMembers. Tidak membaca seluruh mahasiswa.
+// Membaca courses, courseClasses (sudah memuat memberCount),
+// dan agregasi jumlah classMembers. Tidak membaca seluruh
+// mahasiswa.
 // ======================================================
 
 async function initializePage() {
@@ -104,6 +106,15 @@ async function initializePage() {
   renderCourseFilter();
   renderClasses();
   updateStatistics();
+
+  // Hanya berjalan untuk kelas lama yang belum punya memberCount.
+  // Setelah itu tidak ada read tambahan.
+  try {
+    await backfillMissingCounts();
+    renderClasses();
+  } catch (error) {
+    console.error("Backfill jumlah anggota:", error);
+  }
 }
 
 async function loadCourses() {
@@ -122,6 +133,43 @@ async function loadClasses() {
     id: item.id,
     ...item.data(),
   }));
+
+  syncCountsFromClasses();
+}
+
+// Ambil jumlah anggota dari field memberCount (tanpa read tambahan).
+function syncCountsFromClasses() {
+  classes.forEach((item) => {
+    if (typeof item.memberCount === "number") {
+      classMemberCounts.set(item.id, item.memberCount);
+    }
+  });
+}
+
+// Backfill satu kali untuk kelas lama yang belum punya memberCount.
+async function backfillMissingCounts() {
+  const missing = classes.filter(
+    (item) => typeof item.memberCount !== "number",
+  );
+
+  if (!missing.length) return;
+
+  await Promise.all(
+    missing.map(async (item) => {
+      const snap = await getCountFromServer(
+        query(collection(db, "classMembers"), where("classId", "==", item.id)),
+      );
+
+      const count = snap.data().count;
+
+      await updateDoc(doc(db, "courseClasses", item.id), {
+        memberCount: count,
+      });
+
+      item.memberCount = count;
+      classMemberCounts.set(item.id, count);
+    }),
+  );
 }
 
 async function loadTotalMemberCount() {
@@ -562,6 +610,8 @@ $("cancelClassBtn").addEventListener("click", closeClassModal);
 // SAVE CLASS
 // Tidak melakukan loadClasses() setelah penyimpanan.
 // Cache diperbarui langsung.
+// memberCount tidak dimasukkan ke classData agar edit
+// kelas tidak menimpa angkanya.
 // ======================================================
 
 $("classForm").addEventListener("submit", async (event) => {
@@ -650,6 +700,7 @@ $("classForm").addEventListener("submit", async (event) => {
 
       const newData = {
         ...classData,
+        memberCount: 0,
         createdAt: serverTimestamp(),
       };
 
@@ -752,11 +803,6 @@ window.removeClass = async function (classId) {
 
     classMemberCounts.delete(classId);
     loadedClassMembers.delete(classId);
-
-    // Jika cache mata kuliah sudah tersedia, perbarui cache-nya.
-    if (loadedCourseMembers.has(item.courseId)) {
-      loadedCourseMembers.add(item.courseId);
-    }
 
     totalMemberCount = Math.max(0, totalMemberCount - relatedMembers.length);
 
@@ -1001,7 +1047,8 @@ $("selectAllBtn").addEventListener("click", () => {
 // ======================================================
 // SAVE MEMBERS
 // Setelah batch berhasil, cache langsung diperbarui.
-// Tidak ada loadMembers() atau getDocs() ulang.
+// memberCount di courseClasses diperbarui dengan
+// increment() pada batch yang sama.
 // ======================================================
 
 $("saveMembersBtn").addEventListener("click", async () => {
@@ -1030,7 +1077,7 @@ $("saveMembersBtn").addEventListener("click", async () => {
   }
 
   const updatedClass = { ...selectedClass };
-  const operationCount = added.length + removed.length;
+  const operationCount = added.length + removed.length + 1; // +1 untuk update memberCount
 
   if (operationCount > 500) {
     showToast(
@@ -1082,6 +1129,12 @@ $("saveMembersBtn").addEventListener("click", async () => {
       batch.delete(doc(db, "classMembers", memberId));
     });
 
+    const delta = addedMembers.length - removed.length;
+
+    batch.update(doc(db, "courseClasses", updatedClass.id), {
+      memberCount: increment(delta),
+    });
+
     await batch.commit();
 
     // Update cache anggota.
@@ -1099,15 +1152,14 @@ $("saveMembersBtn").addEventListener("click", async () => {
     const previousCount =
       classMemberCounts.get(updatedClass.id) ?? originalNims.size;
 
-    classMemberCounts.set(
-      updatedClass.id,
-      previousCount + addedMembers.length - removed.length,
-    );
+    const newCount = Math.max(0, previousCount + delta);
 
-    totalMemberCount = Math.max(
-      0,
-      totalMemberCount + addedMembers.length - removed.length,
-    );
+    classMemberCounts.set(updatedClass.id, newCount);
+
+    const classIndex = classes.findIndex((item) => item.id === updatedClass.id);
+    if (classIndex !== -1) classes[classIndex].memberCount = newCount;
+
+    totalMemberCount = Math.max(0, totalMemberCount + delta);
 
     // Tandai kelas dan mata kuliah sebagai sudah memiliki cache.
     loadedCourseMembers.add(updatedClass.courseId);
@@ -1146,6 +1198,8 @@ $("courseFilter").addEventListener("change", renderClasses);
 // ======================================================
 // MANUAL REFRESH
 // Hanya tombol ini yang memaksa pembacaan ulang data.
+// Cache dikosongkan SEBELUM loadClasses() agar jumlah
+// dari memberCount tidak ikut terhapus.
 // ======================================================
 
 $("refreshBtn").addEventListener("click", async () => {
@@ -1154,10 +1208,6 @@ $("refreshBtn").addEventListener("click", async () => {
   try {
     $("classTableBody").innerHTML = loadingRow();
 
-    await Promise.all([loadCourses(), loadClasses(), loadTotalMemberCount()]);
-
-    // Reset cache agar data anggota dibaca lagi hanya
-    // ketika diperlukan setelah refresh manual.
     students = [];
     studentsLoaded = false;
 
@@ -1165,6 +1215,8 @@ $("refreshBtn").addEventListener("click", async () => {
     loadedCourseMembers.clear();
     loadedClassMembers.clear();
     classMemberCounts.clear();
+
+    await Promise.all([loadCourses(), loadClasses(), loadTotalMemberCount()]);
 
     renderCourseOptions();
     renderCourseFilter();

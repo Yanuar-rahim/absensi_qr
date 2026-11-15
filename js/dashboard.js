@@ -249,7 +249,7 @@ logoutButton.addEventListener("click", async () => {
 
   try {
     await signOut(auth);
-    window.location.replace("login.html");
+    window.location.replace("../login.html");
   } catch (error) {
     console.error("Logout error:", error);
     alert("Gagal keluar dari akun.");

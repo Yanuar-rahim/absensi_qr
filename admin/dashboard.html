@@ -7,9 +7,13 @@
 
     <title>Dashboard Administrator - Absensi QR</title>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -73,6 +77,7 @@
         .sidebar {
           transform: translateX(-100%);
         }
+
         .sidebar.show {
           transform: translateX(0);
         }
@@ -92,6 +97,7 @@
       id="sidebar"
       class="sidebar fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white"
     >
+      <!-- Sidebar Header -->
       <div class="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
         <div
           class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-white"
@@ -104,7 +110,11 @@
           <p class="text-xs text-slate-400">Administrator Panel</p>
         </div>
 
-        <button id="closeSidebar" class="ml-auto text-slate-400 md:hidden">
+        <button
+          id="closeSidebar"
+          class="ml-auto text-slate-400 md:hidden"
+          aria-label="Tutup menu"
+        >
           <i data-lucide="x" class="h-5 w-5"></i>
         </button>
       </div>
@@ -128,7 +138,7 @@
           </a>
 
           <a
-            href="admin/mahasiswa.html"
+            href="mahasiswa.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
             <i data-lucide="users" class="h-5 w-5"></i>
@@ -136,7 +146,7 @@
           </a>
 
           <a
-            href="admin/mata-kuliah.html"
+            href="mata-kuliah.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
             <i data-lucide="book-open" class="h-5 w-5"></i>
@@ -144,7 +154,7 @@
           </a>
 
           <a
-            href="admin/kelas.html"
+            href="kelas.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
             <i data-lucide="users-round" class="h-5 w-5"></i>
@@ -152,7 +162,7 @@
           </a>
 
           <a
-            href="admin/sesi-absensi.html"
+            href="sesi-absensi.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
             <i data-lucide="qr-code" class="h-5 w-5"></i>
@@ -160,7 +170,7 @@
           </a>
 
           <a
-            href="admin/laporan.html"
+            href="laporan.html"
             class="nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600"
           >
             <i data-lucide="file-chart-column" class="h-5 w-5"></i>
@@ -212,6 +222,7 @@
           <button
             id="openSidebar"
             class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+            aria-label="Buka menu"
           >
             <i data-lucide="menu" class="h-6 w-6"></i>
           </button>
@@ -220,6 +231,7 @@
             <h2 class="text-lg font-bold text-slate-800 sm:text-xl">
               Dashboard
             </h2>
+
             <p class="hidden text-xs text-slate-400 sm:block">
               Ringkasan sistem absensi mahasiswa
             </p>
@@ -227,12 +239,12 @@
         </div>
 
         <div class="flex items-center gap-4">
-
           <div class="flex items-center gap-3">
             <div class="hidden text-right sm:block">
               <p id="adminNameTop" class="text-sm font-semibold text-slate-700">
                 Memuat...
               </p>
+
               <p class="text-xs text-slate-400">Administrator</p>
             </div>
 
@@ -246,10 +258,10 @@
       </header>
 
       <!-- Dashboard Body -->
-      <section class="mx-auto w-full max-w-8xl p-4 sm:p-6 lg:p-10">
+      <section class="mx-auto w-full max-w-screen-2xl p-4 sm:p-6 lg:p-10">
         <!-- Welcome -->
         <div
-          class="hero-pattern relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 p-6 text-white shadow-lg shadow-blue-200 sm:p-8 lg:mb-8 lg:p-10"
+          class="hero-pattern relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-blue-500 p-5 text-white shadow-lg shadow-blue-200 sm:p-8 lg:mb-8 lg:p-10"
         >
           <div
             class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
@@ -272,18 +284,20 @@
               </p>
             </div>
 
-            <div class="flex flex-wrap gap-3">
+            <!-- CTA BUTTONS -->
+            <!-- Mobile: Vertikal | Desktop: Horizontal -->
+            <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <a
-                href="admin/sesi-absensi.html"
-                class="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50"
+                href="sesi-absensi.html"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 sm:w-auto"
               >
                 <i data-lucide="qr-code" class="h-4 w-4"></i>
                 Buat sesi absensi
               </a>
 
               <a
-                href="admin/laporan.html"
-                class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                href="laporan.html"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:w-auto"
               >
                 <i data-lucide="file-chart-column" class="h-4 w-4"></i>
                 Lihat laporan
@@ -303,6 +317,7 @@
             >
               <i data-lucide="users" class="h-6 w-6"></i>
             </div>
+
             <div class="min-w-0">
               <h4
                 id="totalStudents"
@@ -310,6 +325,7 @@
               >
                 --
               </h4>
+
               <p class="mt-2 text-xs text-slate-500">Mahasiswa terdaftar</p>
             </div>
           </div>
@@ -321,6 +337,7 @@
             >
               <i data-lucide="book-open" class="h-6 w-6"></i>
             </div>
+
             <div class="min-w-0">
               <h4
                 id="totalCourses"
@@ -328,6 +345,7 @@
               >
                 --
               </h4>
+
               <p class="mt-2 text-xs text-slate-500">Mata kuliah</p>
             </div>
           </div>
@@ -339,6 +357,7 @@
             >
               <i data-lucide="calendar-check" class="h-6 w-6"></i>
             </div>
+
             <div class="min-w-0">
               <h4
                 id="totalSessions"
@@ -346,6 +365,7 @@
               >
                 --
               </h4>
+
               <p class="mt-2 text-xs text-slate-500">Sesi absensi</p>
             </div>
           </div>
@@ -357,6 +377,7 @@
             >
               <i data-lucide="clipboard-check" class="h-6 w-6"></i>
             </div>
+
             <div class="min-w-0">
               <h4
                 id="totalAttendanceToday"
@@ -364,6 +385,7 @@
               >
                 --
               </h4>
+
               <p class="mt-2 text-xs text-slate-500">Kehadiran hari ini</p>
             </div>
           </div>
@@ -375,14 +397,16 @@
           <div class="lg:col-span-2">
             <div class="mb-4">
               <h3 class="text-lg font-bold text-slate-800">Akses cepat</h3>
+
               <p class="text-sm text-slate-400">
                 Pilih menu untuk mulai mengelola sistem
               </p>
             </div>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <!-- Data Mahasiswa -->
               <a
-                href="admin/mahasiswa.html"
+                href="mahasiswa.html"
                 class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-300 hover:shadow-md"
               >
                 <div
@@ -390,20 +414,24 @@
                 >
                   <i data-lucide="users" class="h-6 w-6"></i>
                 </div>
+
                 <div class="min-w-0 flex-1">
                   <h4 class="font-semibold text-slate-800">Data Mahasiswa</h4>
+
                   <p class="mt-1 text-xs leading-relaxed text-slate-500">
                     Kelola data mahasiswa dan NIM.
                   </p>
                 </div>
+
                 <i
                   data-lucide="chevron-right"
                   class="mt-1 h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600"
                 ></i>
               </a>
 
+              <!-- Mata Kuliah -->
               <a
-                href="admin/mata-kuliah.html"
+                href="mata-kuliah.html"
                 class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-indigo-300 hover:shadow-md"
               >
                 <div
@@ -411,20 +439,24 @@
                 >
                   <i data-lucide="book-open" class="h-6 w-6"></i>
                 </div>
+
                 <div class="min-w-0 flex-1">
                   <h4 class="font-semibold text-slate-800">Mata Kuliah</h4>
+
                   <p class="mt-1 text-xs leading-relaxed text-slate-500">
                     Kelola daftar mata kuliah.
                   </p>
                 </div>
+
                 <i
                   data-lucide="chevron-right"
                   class="mt-1 h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-indigo-600"
                 ></i>
               </a>
 
+              <!-- Sesi Absensi -->
               <a
-                href="admin/sesi-absensi.html"
+                href="sesi-absensi.html"
                 class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-md"
               >
                 <div
@@ -432,20 +464,24 @@
                 >
                   <i data-lucide="qr-code" class="h-6 w-6"></i>
                 </div>
+
                 <div class="min-w-0 flex-1">
                   <h4 class="font-semibold text-slate-800">Sesi Absensi</h4>
+
                   <p class="mt-1 text-xs leading-relaxed text-slate-500">
                     Buat sesi dan QR Code absensi.
                   </p>
                 </div>
+
                 <i
                   data-lucide="chevron-right"
                   class="mt-1 h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-violet-600"
                 ></i>
               </a>
 
+              <!-- Laporan Absensi -->
               <a
-                href="admin/laporan.html"
+                href="laporan.html"
                 class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-emerald-300 hover:shadow-md"
               >
                 <div
@@ -453,12 +489,15 @@
                 >
                   <i data-lucide="file-chart-column" class="h-6 w-6"></i>
                 </div>
+
                 <div class="min-w-0 flex-1">
                   <h4 class="font-semibold text-slate-800">Laporan Absensi</h4>
+
                   <p class="mt-1 text-xs leading-relaxed text-slate-500">
                     Lihat dan rekap data kehadiran.
                   </p>
                 </div>
+
                 <i
                   data-lucide="chevron-right"
                   class="mt-1 h-5 w-5 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-emerald-600"
@@ -472,6 +511,7 @@
             class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
           >
             <h3 class="text-lg font-bold text-slate-800">Alur penggunaan</h3>
+
             <p class="mb-5 text-sm text-slate-400">
               Urutan yang disarankan untuk mulai
             </p>
@@ -480,41 +520,53 @@
               <li class="flex gap-3">
                 <span
                   class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700"
-                  >1</span
                 >
+                  1
+                </span>
+
                 <p class="text-sm leading-relaxed text-slate-600">
                   Tambahkan data mahasiswa dan mata kuliah.
                 </p>
               </li>
+
               <li class="flex gap-3">
                 <span
                   class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700"
-                  >2</span
                 >
+                  2
+                </span>
+
                 <p class="text-sm leading-relaxed text-slate-600">
                   Kelompokkan mahasiswa ke dalam kelas.
                 </p>
               </li>
+
               <li class="flex gap-3">
                 <span
                   class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700"
-                  >3</span
                 >
+                  3
+                </span>
+
                 <p class="text-sm leading-relaxed text-slate-600">
                   Buat sesi absensi dan tampilkan QR Code.
                 </p>
               </li>
+
               <li class="flex gap-3">
                 <span
                   class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700"
-                  >4</span
                 >
+                  4
+                </span>
+
                 <p class="text-sm leading-relaxed text-slate-600">
                   Pantau kehadiran di halaman laporan.
                 </p>
               </li>
             </ol>
 
+            <!-- Information -->
             <div
               class="mt-6 flex items-start gap-3 rounded-xl bg-blue-50 p-4 text-xs leading-relaxed text-slate-600"
             >
@@ -522,6 +574,7 @@
                 data-lucide="info"
                 class="mt-0.5 h-4 w-4 shrink-0 text-blue-600"
               ></i>
+
               <p>
                 Dashboard terhubung dengan Firebase Authentication dan Cloud
                 Firestore. Statistik menampilkan jumlah data yang tersimpan.
@@ -540,10 +593,38 @@
     </main>
 
     <!-- File JavaScript Dashboard -->
-    <script type="module" src="./js/dashboard.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
 
+    <!-- Sidebar Mobile & Icons -->
     <script>
       lucide.createIcons();
+
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const openSidebar = document.getElementById("openSidebar");
+      const closeSidebar = document.getElementById("closeSidebar");
+
+      function showSidebar() {
+        sidebar.classList.add("show");
+        overlay.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+      }
+
+      function hideSidebar() {
+        sidebar.classList.remove("show");
+        overlay.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      openSidebar.addEventListener("click", showSidebar);
+      closeSidebar.addEventListener("click", hideSidebar);
+      overlay.addEventListener("click", hideSidebar);
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) {
+          hideSidebar();
+        }
+      });
     </script>
   </body>
 </html>
