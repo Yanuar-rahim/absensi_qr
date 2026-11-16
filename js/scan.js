@@ -16,7 +16,6 @@ import {
 const params = new URLSearchParams(window.location.search);
 
 const sessionId = params.get("sessionId");
-// Token dinamis dari QR (parameter "t")
 const dynamicToken = params.get("t");
 
 // =====================================
@@ -46,17 +45,115 @@ let currentSession = null;
 let currentStudent = null;
 let currentMembership = null;
 
-// Data token QR dinamis yang sudah divalidasi saat halaman dimuat
 let currentToken = null;
 
 let isSubmitting = false;
 let isChecking = false;
 
-// Cache hasil verifikasi NIM (hanya selama halaman terbuka)
 let verifiedNim = null;
 
 // =====================================
-// 4. MESSAGE
+// 4. EXTERNAL SUCCESS SOUND
+// =====================================
+
+// File audio lokal:
+// assets/sounds/success.mp3
+
+const successAudio = new Audio(
+  new URL("../assets/sounds/success.mp3", import.meta.url),
+);
+
+successAudio.preload = "auto";
+successAudio.volume = 1.0;
+
+let audioUnlocked = false;
+
+// Aktifkan audio melalui interaksi pertama pengguna.
+function unlockSuccessAudio() {
+  if (audioUnlocked) return;
+
+  successAudio.muted = true;
+  successAudio.currentTime = 0;
+
+  successAudio
+    .play()
+    .then(() => {
+      successAudio.pause();
+      successAudio.currentTime = 0;
+      successAudio.muted = false;
+
+      audioUnlocked = true;
+
+      console.log("Audio notifikasi berhasil diaktifkan.");
+    })
+    .catch((error) => {
+      successAudio.muted = false;
+
+      console.warn("Audio belum dapat diaktifkan:", error);
+    });
+}
+
+// Aktifkan audio melalui interaksi pertama pengguna.
+document.addEventListener("pointerdown", unlockSuccessAudio, { passive: true });
+
+document.addEventListener("keydown", unlockSuccessAudio);
+
+// =====================================
+// 5. PLAY SUCCESS SOUND
+// =====================================
+
+async function playSuccessSound() {
+  try {
+    if (!audioUnlocked) {
+      console.warn("Audio belum diaktifkan browser.");
+
+      return;
+    }
+
+    // Reset audio agar diputar dari awal.
+    successAudio.pause();
+    successAudio.currentTime = 0;
+    successAudio.muted = false;
+
+    await successAudio.play();
+
+    console.log("Suara keberhasilan absensi diputar.");
+  } catch (error) {
+    console.warn("Gagal memainkan sound effect:", error);
+  }
+}
+
+// =====================================
+// 6. SUCCESS ANIMATION
+// =====================================
+
+function playSuccessAnimation() {
+  const icon = successState.querySelector(".success-icon");
+  const check = successState.querySelector(".success-check");
+  const content = successState.querySelector(".success-content");
+
+  if (!icon || !check || !content) {
+    console.warn("Elemen animasi keberhasilan tidak ditemukan.");
+
+    return;
+  }
+
+  // Reset animasi agar dapat dimainkan kembali.
+  icon.classList.remove("success-icon");
+  check.classList.remove("success-check");
+  content.classList.remove("success-content");
+
+  // Memaksa browser memperbarui tampilan.
+  void successState.offsetWidth;
+
+  // Jalankan kembali animasi.
+  icon.classList.add("success-icon");
+  check.classList.add("success-check");
+  content.classList.add("success-content");
+}
+
+// =====================================
+// 7. MESSAGE
 // =====================================
 
 function showMessage(message, type = "error") {
@@ -76,7 +173,7 @@ function hideMessage() {
 }
 
 // =====================================
-// 5. ERROR
+// 8. ERROR
 // =====================================
 
 function showError(message) {
@@ -90,7 +187,7 @@ function showError(message) {
 }
 
 // =====================================
-// 6. AUTHENTICATION
+// 9. AUTHENTICATION
 // =====================================
 
 async function initializeStudentAuth() {
@@ -120,12 +217,13 @@ async function initializeStudentAuth() {
     }
 
     showError(message);
+
     return false;
   }
 }
 
 // =====================================
-// 7. VALIDATION
+// 10. VALIDATION
 // =====================================
 
 function isSessionValid(session) {
@@ -150,7 +248,7 @@ function isTokenValid(tokenData) {
 }
 
 // =====================================
-// 8. FORMAT DATE
+// 11. FORMAT DATE
 // =====================================
 
 function formatDate(value) {
@@ -173,31 +271,34 @@ function formatTime(timestamp) {
 }
 
 // =====================================
-// 9. LOAD SESSION + VALIDASI TOKEN DINAMIS
+// 12. LOAD SESSION + VALIDASI TOKEN
 // =====================================
 
 async function loadSession() {
   if (!sessionId || !dynamicToken) {
     showError("QR Code tidak memiliki informasi sesi yang lengkap.");
+
     return;
   }
 
   try {
     loadingText.textContent = "Memeriksa sesi absensi...";
 
-    // A. Baca dokumen token dinamis dan dokumen sesi secara paralel
+    // Baca token, sesi, dan kunci perangkat secara paralel.
     const [tokenSnapshot, sessionSnapshot, lockSnapshot] = await Promise.all([
       getDoc(doc(db, "sessions", sessionId, "qrTokens", dynamicToken)),
+
       getDoc(doc(db, "sessions", sessionId)),
-      // Kunci perangkat: 1 perangkat (UID anonim) hanya boleh absen 1 kali per sesi
+
       getDoc(
         doc(db, "sessions", sessionId, "deviceLocks", auth.currentUser.uid),
       ),
     ]);
 
-    // B. Validasi token dinamis
+    // A. Validasi token.
     if (!tokenSnapshot.exists()) {
       showError("QR Code tidak valid. Pindai ulang QR Code.");
+
       return;
     }
 
@@ -205,17 +306,20 @@ async function loadSession() {
 
     if (tokenData.sessionId !== sessionId || tokenData.token !== dynamicToken) {
       showError("QR Code tidak sesuai dengan sesi absensi.");
+
       return;
     }
 
     if (!isTokenValid(tokenData)) {
       showError("QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru.");
+
       return;
     }
 
-    // C. Validasi sesi
+    // B. Validasi sesi.
     if (!sessionSnapshot.exists()) {
       showError("Sesi absensi tidak ditemukan.");
+
       return;
     }
 
@@ -223,10 +327,11 @@ async function loadSession() {
 
     if (!isSessionValid(session)) {
       showError("Sesi belum dimulai, sudah berakhir, atau telah ditutup.");
+
       return;
     }
 
-    // D. Perangkat ini sudah dipakai absen pada sesi/pertemuan ini
+    // C. Validasi kunci perangkat.
     if (lockSnapshot.exists()) {
       const usedBy = lockSnapshot.data().studentNim;
 
@@ -235,9 +340,11 @@ async function loadSession() {
           (usedBy ? " (NIM " + usedBy + ")" : "") +
           " pada pertemuan ini. Satu perangkat hanya dapat absen satu kali.",
       );
+
       return;
     }
 
+    // D. Validasi kelengkapan sesi.
     if (
       !session.courseId ||
       !session.courseCode ||
@@ -250,6 +357,7 @@ async function loadSession() {
       !session.expiresAt
     ) {
       showError("Informasi sesi atau kelas belum lengkap.");
+
       return;
     }
 
@@ -260,22 +368,26 @@ async function loadSession() {
       ...session,
     };
 
+    // Tampilkan informasi sesi.
     $("courseName").textContent = session.courseName;
+
     $("courseCode").textContent = session.courseCode;
+
     $("className").textContent = session.className;
 
-    // Field di halaman admin bernama lecturerName
     $("lecturerName").textContent = session.lecturerName
       ? "Dosen: " + session.lecturerName
       : "";
 
     $("meetingNumber").textContent = "Pertemuan " + session.meeting;
+
     $("sessionDate").textContent = formatDate(session.date);
 
     $("sessionTime").textContent =
       `${formatTime(session.startsAt)} - ${formatTime(session.expiresAt)}`;
 
     loadingState.classList.add("hidden");
+
     sessionContent.classList.remove("hidden");
   } catch (error) {
     console.error("Load session error:", error);
@@ -289,7 +401,7 @@ async function loadSession() {
 }
 
 // =====================================
-// 10. RESET VERIFICATION
+// 13. RESET VERIFICATION
 // =====================================
 
 function resetVerification() {
@@ -306,7 +418,7 @@ function resetVerification() {
 }
 
 // =====================================
-// 11. CHECK STUDENT
+// 14. CHECK STUDENT
 // =====================================
 
 async function checkStudent() {
@@ -318,32 +430,42 @@ async function checkStudent() {
 
   if (!nim) {
     resetVerification();
+
     showMessage("Masukkan NIM terlebih dahulu.");
+
     nimInput.focus();
+
     return;
   }
 
   if (!/^[a-zA-Z0-9_-]+$/.test(nim)) {
     resetVerification();
+
     showMessage("Format NIM tidak valid.");
+
     return;
   }
 
   if (!currentSession || !isSessionValid(currentSession)) {
     resetVerification();
+
     showMessage("Sesi absensi sudah tidak aktif.");
+
     return;
   }
 
   if (!isTokenValid(currentToken)) {
     resetVerification();
+
     showMessage("QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru.");
+
     return;
   }
 
-  // Cache: NIM sudah diverifikasi
+  // Cache hasil verifikasi selama halaman terbuka.
   if (verifiedNim === nim && currentStudent && currentMembership) {
     studentInfo.classList.remove("hidden");
+
     submitButton.disabled = false;
 
     showMessage(
@@ -362,12 +484,14 @@ async function checkStudent() {
   submitButton.disabled = true;
 
   try {
-    // A. Dokumen mahasiswa
+    // A. Ambil data mahasiswa.
     const studentSnapshot = await getDoc(doc(db, "students", nim));
 
     if (!studentSnapshot.exists()) {
       resetVerification();
+
       showMessage("NIM tidak ditemukan. Hubungi administrator.");
+
       return;
     }
 
@@ -375,13 +499,17 @@ async function checkStudent() {
 
     if (student.nim && student.nim !== nim) {
       resetVerification();
+
       showMessage("Data NIM tidak sesuai.");
+
       return;
     }
 
     if (student.status && student.status !== "active") {
       resetVerification();
+
       showMessage("Status mahasiswa tidak aktif.");
+
       return;
     }
 
@@ -389,11 +517,13 @@ async function checkStudent() {
 
     if (!studentName) {
       resetVerification();
+
       showMessage("Data nama mahasiswa tidak lengkap.");
+
       return;
     }
 
-    // B. Dokumen keanggotaan kelas
+    // B. Ambil data keanggotaan kelas.
     const membershipSnapshot = await getDoc(
       doc(db, "classMembers", `${currentSession.classId}_${nim}`),
     );
@@ -418,12 +548,17 @@ async function checkStudent() {
       membership.courseId !== currentSession.courseId
     ) {
       resetVerification();
+
       showMessage("Data keanggotaan kelas tidak sesuai.");
+
       return;
     }
 
-    // C. Simpan hasil verifikasi
-    currentStudent = { nim, name: studentName };
+    // C. Simpan hasil verifikasi.
+    currentStudent = {
+      nim,
+      name: studentName,
+    };
 
     currentMembership = {
       classId: membership.classId,
@@ -434,7 +569,9 @@ async function checkStudent() {
     verifiedNim = nim;
 
     $("studentName").textContent = studentName;
+
     $("studentNim").textContent = "NIM: " + nim;
+
     $("studentClass").textContent = "Kelas: " + currentSession.className;
 
     studentInfo.classList.remove("hidden");
@@ -463,6 +600,7 @@ async function checkStudent() {
     isChecking = false;
 
     checkButton.disabled = false;
+
     checkButton.textContent = "Periksa NIM";
   }
 }
@@ -470,7 +608,7 @@ async function checkStudent() {
 checkButton.addEventListener("click", checkStudent);
 
 // =====================================
-// 12. INPUT CHANGE
+// 15. INPUT CHANGE
 // =====================================
 
 nimInput.addEventListener("input", () => {
@@ -478,7 +616,7 @@ nimInput.addEventListener("input", () => {
 });
 
 // =====================================
-// 13. SUBMIT ATTENDANCE
+// 16. SUBMIT ATTENDANCE
 // =====================================
 
 $("attendanceForm").addEventListener("submit", async (event) => {
@@ -488,32 +626,40 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
   if (!auth.currentUser) {
     showMessage("Autentikasi mahasiswa tidak tersedia.");
+
     return;
   }
 
   if (!currentSession || !currentStudent || !currentMembership) {
     showMessage("Periksa NIM dan keanggotaan kelas terlebih dahulu.");
+
     return;
   }
 
   if (nimInput.value.trim() !== verifiedNim) {
     resetVerification();
+
     showMessage("NIM berubah. Silakan periksa kembali.");
+
     return;
   }
 
   if (!isSessionValid(currentSession)) {
     showMessage("Sesi absensi sudah tidak aktif.");
+
     submitButton.disabled = true;
+
     return;
   }
 
-  // Token dinamis harus masih berlaku saat absensi dikirim
+  // Token harus masih berlaku ketika absensi dikirim.
   if (!isTokenValid(currentToken)) {
     submitButton.disabled = true;
+
     showMessage(
       "QR Code sudah kedaluwarsa. Pindai ulang QR Code terbaru untuk absen.",
     );
+
     return;
   }
 
@@ -526,6 +672,10 @@ $("attendanceForm").addEventListener("submit", async (event) => {
   submitButton.textContent = "Menyimpan absensi...";
 
   try {
+    // =====================================
+    // A. ATTENDANCE REFERENCE
+    // =====================================
+
     const attendanceRef = doc(
       db,
       "attendance",
@@ -550,13 +700,16 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
       status: "hadir",
 
-      // Token dinamis yang dipindai; dipakai Firestore Rules untuk validasi
+      // Token QR dinamis untuk validasi Firestore Rules.
       qrToken: dynamicToken,
 
       createdAt: serverTimestamp(),
     };
 
-    // Absensi dan kunci perangkat disimpan atomik dalam satu batch
+    // =====================================
+    // B. DEVICE LOCK REFERENCE
+    // =====================================
+
     const lockRef = doc(
       db,
       "sessions",
@@ -565,29 +718,53 @@ $("attendanceForm").addEventListener("submit", async (event) => {
       auth.currentUser.uid,
     );
 
+    // =====================================
+    // C. ATOMIC BATCH
+    // =====================================
+
     const batch = writeBatch(db);
 
+    // Simpan data absensi.
     batch.set(attendanceRef, attendanceData);
 
+    // Simpan penguncian perangkat.
     batch.set(lockRef, {
       sessionId,
+
       studentNim: currentStudent.nim,
+
       deviceUid: auth.currentUser.uid,
+
       createdAt: serverTimestamp(),
     });
 
+    // Tunggu sampai kedua operasi berhasil.
     await batch.commit();
 
-    sessionContent.classList.add("hidden");
-    successState.classList.remove("hidden");
+    // =====================================
+    // D. ABSENSI BERHASIL
+    // =====================================
 
+    // Isi informasi keberhasilan terlebih dahulu.
     $("successName").textContent = currentStudent.name;
+
     $("successNim").textContent = "NIM: " + currentStudent.nim;
 
     $("successCourse").textContent =
       `${currentSession.courseName} - Pertemuan ${currentSession.meeting}`;
 
     $("successClass").textContent = "Kelas: " + currentMembership.className;
+
+    // Sembunyikan form dan tampilkan halaman sukses.
+    sessionContent.classList.add("hidden");
+
+    successState.classList.remove("hidden");
+
+    // Jalankan animasi centang.
+    playSuccessAnimation();
+
+    // Putar MP3 lokal setelah absensi berhasil.
+    playSuccessSound();
   } catch (error) {
     console.error("Attendance error:", error);
 
@@ -605,11 +782,13 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 
     submitButton.textContent = "Konfirmasi Kehadiran";
 
+    // Jangan mengaktifkan form jika absensi berhasil.
     if (!successState.classList.contains("hidden")) {
       return;
     }
 
     nimInput.disabled = false;
+
     checkButton.disabled = false;
 
     submitButton.disabled =
@@ -621,7 +800,7 @@ $("attendanceForm").addEventListener("submit", async (event) => {
 });
 
 // =====================================
-// 14. INITIALIZE
+// 17. INITIALIZE
 // =====================================
 
 async function initialize() {

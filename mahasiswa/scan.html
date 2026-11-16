@@ -22,6 +22,86 @@
       body {
         background: #f8fafc;
       }
+
+      /* =====================================
+       ANIMASI SUCCESS ICON
+    ===================================== */
+
+      .success-icon {
+        animation: successPop 0.55s ease-out forwards;
+        transform-origin: center;
+      }
+
+      @keyframes successPop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+
+        70% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* =====================================
+       ANIMASI GARIS CENTANG
+    ===================================== */
+
+      .success-check {
+        stroke-dasharray: 30;
+        stroke-dashoffset: 30;
+        animation: drawCheck 0.65s ease forwards 0.4s;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @keyframes drawCheck {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* =====================================
+       ANIMASI KONTEN BERHASIL
+    ===================================== */
+
+      .success-content {
+        animation: successFade 0.7s ease forwards 0.55s;
+        opacity: 0;
+      }
+
+      @keyframes successFade {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* =====================================
+       AKSESIBILITAS
+    ===================================== */
+
+      @media (prefers-reduced-motion: reduce) {
+        .success-icon,
+        .success-check,
+        .success-content {
+          animation: none;
+          opacity: 1;
+          transform: none;
+          stroke-dashoffset: 0;
+        }
+      }
     </style>
   </head>
 
@@ -82,12 +162,14 @@
 
             <div class="mt-3 rounded-lg border border-blue-100 bg-white p-3">
               <p class="text-xs text-slate-400">KELAS</p>
+
               <p
                 id="className"
                 class="mt-1 text-sm font-semibold text-slate-700"
               >
                 -
               </p>
+
               <p id="lecturerName" class="mt-1 text-xs text-slate-500"></p>
             </div>
 
@@ -225,8 +307,9 @@
 
         <!-- SUCCESS -->
         <div id="successState" class="hidden py-6 text-center">
+          <!-- ANIMATED CHECK ICON -->
           <div
-            class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
+            class="success-icon mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -235,29 +318,31 @@
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="2.5"
             >
-              <path d="M20 6 9 17l-5-5" />
-              <circle cx="12" cy="12" r="10" />
+              <path class="success-check" d="M5 12.5 10 17l9-10" fill="none" />
             </svg>
           </div>
 
-          <h2 class="mt-4 text-xl font-bold text-slate-800">
-            Absensi Berhasil!
-          </h2>
+          <!-- SUCCESS CONTENT -->
+          <div class="success-content">
+            <h2 class="mt-4 text-xl font-bold text-slate-800">
+              Absensi Berhasil!
+            </h2>
 
-          <p class="mt-2 text-sm text-slate-500">
-            Kehadiran Anda berhasil dicatat.
-          </p>
+            <p class="mt-2 text-sm text-slate-500">
+              Kehadiran Anda berhasil dicatat.
+            </p>
 
-          <div class="mt-5 rounded-xl bg-emerald-50 p-4 text-left">
-            <p id="successName" class="font-semibold text-slate-800"></p>
+            <div class="mt-5 rounded-xl bg-emerald-50 p-4 text-left">
+              <p id="successName" class="font-semibold text-slate-800"></p>
 
-            <p id="successNim" class="mt-1 text-xs text-slate-500"></p>
+              <p id="successNim" class="mt-1 text-xs text-slate-500"></p>
 
-            <p id="successCourse" class="mt-2 text-xs text-slate-500"></p>
+              <p id="successCourse" class="mt-2 text-xs text-slate-500"></p>
 
-            <p id="successClass" class="mt-1 text-xs text-slate-500"></p>
+              <p id="successClass" class="mt-1 text-xs text-slate-500"></p>
+            </div>
           </div>
         </div>
       </div>
@@ -268,6 +353,7 @@
       </p>
     </main>
 
+    <!-- SCAN SCRIPT -->
     <script type="module" src="../js/scan.js"></script>
   </body>
 </html>
