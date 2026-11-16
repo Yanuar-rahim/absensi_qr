@@ -60,7 +60,7 @@ let verifiedNim = null;
 // assets/sounds/success.mp3
 
 const successAudio = new Audio(
-  new URL("../assets/sounds/success.mp3", import.meta.url),
+  new URL("../assets/sounds/successs.mp3", import.meta.url),
 );
 
 successAudio.preload = "auto";

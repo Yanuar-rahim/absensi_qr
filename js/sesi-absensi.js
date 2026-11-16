@@ -542,8 +542,8 @@ sessionForm.addEventListener("submit", async (event) => {
 });
 
 // ==================== QR DINAMIS ====================
-const QR_REFRESH_SECONDS = 30; // QR berganti setiap 30 detik
-const QR_TOKEN_LIFETIME_SECONDS = 40; // token lama masih valid 40 detik
+const QR_REFRESH_SECONDS = 45; // QR berganti setiap 45 detik
+const QR_TOKEN_LIFETIME_SECONDS = 50; // token lama masih valid 50 detik
 
 let qrInstance = null;
 let qrTimer = null;
