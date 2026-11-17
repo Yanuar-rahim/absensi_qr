@@ -1,7 +1,7 @@
 {
   "hosting": {
+    "site": "absensi-qr-online-dde8c",
     "public": ".",
-    "ignore": ["firebase.json", ".firebaserc", "**/.*", "**/node_modules/**"],
-    "cleanUrls": false
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
 }
